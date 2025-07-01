@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refúgio Beira Rio - Vista Panorâmica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cabin', sans-serif;
+            overflow: hidden;
+            background-color: #000;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+
+
+        .panorama-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .panorama-viewer {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+        }
+        
+        .panorama-viewer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(0,0,0,0.4) 1px, transparent 0),
+                radial-gradient(circle at 3px 3px, rgba(255,255,255,0.15) 1px, transparent 0);
+            background-size: 3px 3px, 5px 5px;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            z-index: 1;
+        }
+
+        .panorama-viewer:active {
+            cursor: grabbing;
+        }
+
+        .panorama-image {
+            height: 100%;
+            max-width: none;
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
+            /* Efeito pixelizado e qualidade reduzida */
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            filter: contrast(0.4) saturate(0.3) blur(2px) brightness(0.6) sepia(0.8) hue-rotate(30deg) grayscale(0.5);
+        }
+        
+
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            backdrop-filter: blur(5px);
+            transition: background-color 0.3s;
+        }
+        
+        .magic-wand {
+            font-size: 24px;
+        }
+        
+        .magic-wand.active {
+            background-color: rgba(255, 215, 0, 0.6);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+        }
+        
+        .magic-cursor {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><text y="24" font-size="24">🪄</text></svg>'), auto !important;
+        }
+        
+        /* Classes para controlar o efeito dinamicamente */
+        .no-effect .panorama-image {
+            image-rendering: auto;
+            filter: none;
+        }
+        
+        .no-effect .panorama-viewer::after {
+            display: none;
+        }
+        
+        /* Animação para o efeito da varinha mágica */
+        @keyframes magicSparkle {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+
+        
+        .clear-area {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            /* Área que revela a imagem original com transparência esfumaçada */
+            -webkit-mask-image: radial-gradient(
+                circle,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 0.9) 40%,
+                rgba(0, 0, 0, 0.6) 60%,
+                rgba(0, 0, 0, 0.3) 75%,
+                rgba(0, 0, 0, 0.1) 85%,
+                rgba(0, 0, 0, 0) 100%
+            );
+            mask-image: radial-gradient(
+                circle,
+                rgba(0, 0, 0, 1) 0%,
+                rgba(0, 0, 0, 0.9) 40%,
+                rgba(0, 0, 0, 0.6) 60%,
+                rgba(0, 0, 0, 0.3) 75%,
+                rgba(0, 0, 0, 0.1) 85%,
+                rgba(0, 0, 0, 0) 100%
+            );
+        }
+
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+
+        
+        .info-panel {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 350px;
+            color: white;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-panel h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .info-panel p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+        
+        .info-panel .quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 17px;
+            line-height: 1.7;
+            border-left: 3px solid rgba(255, 255, 255, 0.5);
+            padding-left: 15px;
+            margin: 20px 0;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .info-panel .author {
+            text-align: right;
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+        
+        .info-panel .btn {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+        }
+        
+        .info-panel .btn:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+        
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: flex-start;
+        }
+        
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            filter: grayscale(1);
+        }
+        
+        .social-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px) scale(1.1);
+            filter: grayscale(0.5);
+        }
+
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            color: white;
+            font-size: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .info-panel {
+                width: 280px;
+                padding: 20px;
+                left: 10px;
+            }
+            
+            .info-panel h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+            }
+            
+            .info-panel p {
+                font-size: 14px;
+                line-height: 1.4;
+                margin-bottom: 15px;
+            }
+            
+            .info-panel .quote {
+                font-size: 15px;
+                line-height: 1.5;
+                margin: 15px 0;
+            }
+            
+            .social-buttons {
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .social-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="panorama-container">
+        <div class="info-panel">
+            <h2>REFUGIO BEIRA RIO</h2>
+            <p>Localizado a ~180km de São Paulo, cerca de 24km de São Luiz do Paraitinga.</p>
+            <div class="quote">
+                "Encantadora propriedade onde cantam os pássaros, ao amanhecer, no extenso arvoredo. 
+                É cortada por cristalinas e refrescantes águas de um cristalino rio. Banhado pelo sol nascente, 
+                oferece a sombra tranquila nas tardes quentes"
+            </div>
+            <div class="author">[Olavo Bilac]</div>
+           
+            <div class="social-buttons">
+                <a href="#" class="social-btn" title="Instagram"><img src="https://refugiobeirario.com/instagram.png" alt="Instagram" style="width: 20px; height: 20px;"></a>
+                <a href="#" class="social-btn" title="YouTube">📺</a>
+                <a href="#" class="social-btn" title="Facebook">📘</a>
+                <a href="#" class="social-btn" title="WhatsApp"><img src="https://refugiobeirario.com/whatsapp.png" alt="WhatsApp" style="width: 20px; height: 20px;"></a>
+            </div>
+        </div>
+        
+        <div class="panorama-viewer" id="panoramaViewer">
+            <img src="PANO_20250615_103245.jpg" alt="Vista Panorâmica do Refúgio Beira Rio" class="panorama-image" id="panoramaImage" onerror="this.onerror=null; this.src='Logo.png'; document.getElementById('loading').style.display='none';">
+        </div>
+        <div class="controls">
+            <button class="control-btn" id="zoomIn">+</button>
+            <button class="control-btn" id="zoomOut">-</button>
+            <button class="control-btn" id="resetView">↺</button>
+            <button class="control-btn magic-wand" id="magicWand" title="Varinha Mágica - Clique para ativar/desativar">🪄</button>
+            <button class="control-btn" id="switchImage" title="Trocar Imagem">🖼️</button>
+        </div>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const panoramaViewer = document.getElementById('panoramaViewer');
+            const panoramaImage = document.getElementById('panoramaImage');
+            const zoomInBtn = document.getElementById('zoomIn');
+            const zoomOutBtn = document.getElementById('zoomOut');
+            const resetViewBtn = document.getElementById('resetView');
+            const magicWandBtn = document.getElementById('magicWand');
+            const switchImageBtn = document.getElementById('switchImage');
+            const loading = document.getElementById('loading');
+            
+            let magicWandActive = false;
+            let clearAreas = [];
+            let currentImageIndex = 0;
+            const images = ['PANO_20250615_103245.jpg', 'PANO_2.jpg'];
+
+            
+            // Garantir que a tela de carregamento seja removida após um tempo máximo
+            setTimeout(function() {
+                if (loading.style.display !== 'none') {
+                    loading.style.display = 'none';
+                    console.log('Tela de carregamento removida pelo timeout');
+                }
+            }, 5000);
+
+            let isDragging = false;
+            let startX = 0;
+            let translateX = 0;
+            let currentTranslateX = 0;
+            let scale = 1;
+            let imageLoaded = false;
+
+            // Esconder a tela de carregamento quando a imagem estiver carregada
+            panoramaImage.onload = function() {
+                imageLoaded = true;
+                loading.style.display = 'none';
+                // Definir a posição inicial para centralizar a imagem
+                resetView();
+                console.log('Imagem carregada com sucesso');
+            };
+            
+            // Tratar erro de carregamento da imagem
+            panoramaImage.onerror = function() {
+                console.error('Erro ao carregar a imagem panorâmica');
+                loading.innerHTML = '<div>Erro ao carregar a imagem. <button onclick="location.reload()">Tentar novamente</button></div>';
+            };
+
+            // Função para resetar a visualização
+            function resetView() {
+                scale = 1;
+                translateX = 0;
+                translateY = 0;
+                updateImageTransform();
+                
+                // Limpar todas as áreas criadas pela varinha mágica
+                clearAreas.forEach(area => {
+                    if (area.parentNode) {
+                        area.parentNode.removeChild(area);
+                    }
+                });
+                clearAreas = [];
+                
+                // Desativar varinha mágica se estiver ativa
+                if (magicWandActive) {
+                    toggleMagicWand();
+                }
+            }
+
+            // Atualizar a transformação da imagem
+            function updateImageTransform() {
+                panoramaImage.style.transform = `translateX(${translateX + currentTranslateX}px) scale(${scale})`;
+                updateClearAreas();
+            }
+            
+            // Função para atualizar posições das áreas limpas
+            function updateClearAreas() {
+                clearAreas.forEach(clearArea => {
+                    if (clearArea.parentNode) {
+                        const imageRect = panoramaImage.getBoundingClientRect();
+                        const viewerRect = panoramaViewer.getBoundingClientRect();
+                        
+                        const originalX = parseFloat(clearArea.dataset.originalX);
+                        const originalY = parseFloat(clearArea.dataset.originalY);
+                        const relativeX = parseFloat(clearArea.dataset.relativeX);
+                        const relativeY = parseFloat(clearArea.dataset.relativeY);
+                        
+                        // Atualizar posição do background para acompanhar a imagem
+                        clearArea.style.backgroundSize = `${imageRect.width}px ${imageRect.height}px`;
+                        
+                        // Calcular nova posição relativa
+                        const newRelativeX = originalX - (imageRect.left - viewerRect.left);
+                        const newRelativeY = originalY - (imageRect.top - viewerRect.top);
+                        
+                        clearArea.style.backgroundPosition = `${-(newRelativeX - 100)}px ${-(newRelativeY - 100)}px`;
+                    }
+                });
+            }
+
+            // Eventos de mouse
+            panoramaViewer.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+
+            // Eventos de toque
+            panoramaViewer.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', endDrag);
+
+            // Botões de controle
+            zoomInBtn.addEventListener('click', zoomIn);
+            zoomOutBtn.addEventListener('click', zoomOut);
+            resetViewBtn.addEventListener('click', resetView);
+            magicWandBtn.addEventListener('click', toggleMagicWand);
+            switchImageBtn.addEventListener('click', switchImage);
+            
+            // Event listener para cliques na imagem quando varinha mágica está ativa
+            panoramaViewer.addEventListener('click', handleMagicWandClick);
+            
+
+
+            // Função para iniciar o arrasto
+            function startDrag(e) {
+                if (!imageLoaded) return;
+                
+                // Se a varinha mágica estiver ativa, verificar se está sobre uma área de efeito
+                if (magicWandActive) {
+                    const rect = panoramaViewer.getBoundingClientRect();
+                    const x = (e.type === 'touchstart' ? e.touches[0].clientX : e.clientX) - rect.left;
+                    const y = (e.type === 'touchstart' ? e.touches[0].clientY : e.clientY) - rect.top;
+                    
+                    // Verificar se está sobre uma área de efeito para removê-la
+                    const areaToRemove = findClearAreaAt(x, y);
+                    if (areaToRemove) {
+                        removeClearArea(areaToRemove);
+                        return;
+                    }
+                    
+                    // Se não está sobre uma área, não permitir pan
+                    return;
+                }
+                
+                isDragging = true;
+                startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                panoramaViewer.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+
+            // Função para arrastar
+            function drag(e) {
+                if (!isDragging || !imageLoaded || magicWandActive) return;
+                
+                const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const diffX = currentX - startX;
+                
+                // Calcular os limites de arrasto com base no tamanho da imagem e no zoom
+                const imageWidth = panoramaImage.offsetWidth * scale;
+                const containerWidth = panoramaViewer.offsetWidth;
+                const maxTranslateX = (imageWidth - containerWidth) / 2;
+                
+                currentTranslateX = diffX;
+                
+                // Limitar o arrasto para não ultrapassar os limites da imagem
+                const totalTranslateX = translateX + currentTranslateX;
+                if (totalTranslateX > maxTranslateX) {
+                    currentTranslateX = maxTranslateX - translateX;
+                } else if (totalTranslateX < -maxTranslateX) {
+                    currentTranslateX = -maxTranslateX - translateX;
+                }
+                
+                updateImageTransform();
+                e.preventDefault();
+            }
+
+            // Função para finalizar o arrasto
+            function endDrag() {
+                if (!isDragging || !imageLoaded || magicWandActive) return;
+                
+                isDragging = false;
+                translateX += currentTranslateX;
+                currentTranslateX = 0;
+                panoramaViewer.style.cursor = 'grab';
+            }
+
+            // Função para zoom in
+            function zoomIn() {
+                if (!imageLoaded) return;
+                scale = Math.min(scale * 1.2, 3); // Limitar o zoom máximo
+                updateImageTransform();
+            }
+
+            // Função para zoom out
+            function zoomOut() {
+                if (!imageLoaded) return;
+                scale = Math.max(scale / 1.2, 0.5); // Limitar o zoom mínimo
+                updateImageTransform();
+            }
+            
+            // Função para trocar imagem
+            function switchImage() {
+                // Mostrar loading
+                loading.style.display = 'flex';
+                imageLoaded = false;
+                
+                // Trocar para a próxima imagem
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                
+                // Limpar áreas da varinha mágica
+                clearAreas.forEach(area => {
+                    if (area.parentNode) {
+                        area.parentNode.removeChild(area);
+                    }
+                });
+                clearAreas = [];
+                
+                // Desativar varinha mágica se estiver ativa
+                if (magicWandActive) {
+                    toggleMagicWand();
+                }
+                
+                // Resetar visualização
+                scale = 1;
+                translateX = 0;
+                currentTranslateX = 0;
+                
+                // Trocar a imagem
+                panoramaImage.src = images[currentImageIndex];
+            }
+
+            // Adicionar suporte para roda do mouse para zoom
+            panoramaViewer.addEventListener('wheel', function(e) {
+                if (!imageLoaded) return;
+                
+                e.preventDefault();
+                if (e.deltaY < 0) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+            });
+
+            // Adicionar suporte para gestos de pinça em dispositivos móveis
+            let initialDistance = 0;
+            panoramaViewer.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    initialDistance = getDistance(e.touches[0], e.touches[1]);
+                }
+            });
+
+            panoramaViewer.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                    const delta = currentDistance - initialDistance;
+                    
+                    if (Math.abs(delta) > 10) { // Pequeno limite para evitar zoom acidental
+                        if (delta > 0) {
+                            zoomIn();
+                        } else {
+                            zoomOut();
+                        }
+                        initialDistance = currentDistance;
+                    }
+                    
+                    e.preventDefault();
+                }
+            });
+
+            // Função auxiliar para calcular a distância entre dois pontos de toque
+            function getDistance(touch1, touch2) {
+                const dx = touch1.clientX - touch2.clientX;
+                const dy = touch1.clientY - touch2.clientY;
+                return Math.sqrt(dx * dx + dy * dy);
+            }
+            
+            // Função para ativar/desativar a varinha mágica
+            function toggleMagicWand() {
+                magicWandActive = !magicWandActive;
+                
+                if (magicWandActive) {
+                    magicWandBtn.classList.add('active');
+                    panoramaViewer.classList.add('magic-cursor');
+                    console.log('Varinha mágica ativada! Clique na imagem para remover o efeito.');
+                } else {
+                    magicWandBtn.classList.remove('active');
+                    panoramaViewer.classList.remove('magic-cursor');
+                    console.log('Varinha mágica desativada.');
+                }
+            }
+            
+            // Função para lidar com cliques da varinha mágica
+            function handleMagicWandClick(e) {
+                if (!magicWandActive || isDragging) return;
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Obter posição do clique relativa ao viewer
+                const rect = panoramaViewer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Criar área sem efeito
+                createClearArea(x, y);
+            }
+            
+            // Função para criar área sem efeito
+               function createClearArea(x, y) {
+                   // Calcular posição considerando as transformações da imagem
+                   const imageRect = panoramaImage.getBoundingClientRect();
+                   const viewerRect = panoramaViewer.getBoundingClientRect();
+                   
+                   // Posição relativa à imagem transformada
+                   const relativeX = x - (imageRect.left - viewerRect.left);
+                   const relativeY = y - (imageRect.top - viewerRect.top);
+                   
+                   // Criar uma cópia da imagem original sem filtros
+                   const clearArea = document.createElement('div');
+                   clearArea.className = 'clear-area';
+                   clearArea.style.cssText = `
+                       position: absolute;
+                       left: ${x - 100}px;
+                       top: ${y - 100}px;
+                       width: 200px;
+                       height: 200px;
+                       border-radius: 50%;
+                       background-image: url('${images[currentImageIndex]}');
+                       background-size: ${imageRect.width}px ${imageRect.height}px;
+                       background-position: ${-(relativeX - 100)}px ${-(relativeY - 100)}px;
+                       background-repeat: no-repeat;
+                       pointer-events: none;
+                       z-index: 10;
+                       overflow: hidden;
+                       animation: magicSparkle 0.5s ease-out;
+                   `;
+                   
+                   // Armazenar dados para atualização durante transformações
+                   clearArea.dataset.originalX = x;
+                   clearArea.dataset.originalY = y;
+                   clearArea.dataset.relativeX = relativeX;
+                   clearArea.dataset.relativeY = relativeY;
+                   
+                   panoramaViewer.appendChild(clearArea);
+                   clearAreas.push(clearArea);
+                   
+                   // Efeito visual temporário de brilho
+                   const sparkle = document.createElement('div');
+                   sparkle.style.cssText = `
+                       position: absolute;
+                       left: ${x - 100}px;
+                       top: ${y - 100}px;
+                       width: 200px;
+                       height: 200px;
+                       border-radius: 50%;
+                       background: radial-gradient(circle, rgba(255,215,0,0.6) 0%, transparent 70%);
+                       pointer-events: none;
+                       z-index: 11;
+                       animation: magicSparkle 0.8s ease-out forwards;
+                   `;
+                   
+                   panoramaViewer.appendChild(sparkle);
+                   
+                   // Remover o brilho após a animação
+                   setTimeout(() => {
+                       if (sparkle.parentNode) {
+                           sparkle.parentNode.removeChild(sparkle);
+                       }
+                   }, 800);
+               }
+               
+               // Função para encontrar área de efeito em uma posição
+               function findClearAreaAt(x, y) {
+                   for (let area of clearAreas) {
+                       const rect = area.getBoundingClientRect();
+                       const viewerRect = panoramaViewer.getBoundingClientRect();
+                       const areaX = rect.left - viewerRect.left;
+                       const areaY = rect.top - viewerRect.top;
+                       const areaWidth = rect.width;
+                       const areaHeight = rect.height;
+                       
+                       // Verificar se o ponto está dentro da área circular
+                       const centerX = areaX + areaWidth / 2;
+                       const centerY = areaY + areaHeight / 2;
+                       const radius = areaWidth / 2;
+                       const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
+                       
+                       if (distance <= radius) {
+                           return area;
+                       }
+                   }
+                   return null;
+               }
+               
+               // Função para remover área de efeito
+               function removeClearArea(area) {
+                   const index = clearAreas.indexOf(area);
+                   if (index > -1) {
+                       clearAreas.splice(index, 1);
+                   }
+                   
+                   // Efeito visual de remoção
+                   area.style.animation = 'magicSparkle 0.3s ease-out reverse';
+                   
+                   setTimeout(() => {
+                       if (area.parentNode) {
+                           area.parentNode.removeChild(area);
+                       }
+                   }, 300);
+               }
+               
+
+        });
+    </script>
+</body>
+</html>
