@@ -71,12 +71,21 @@
             height: 100%;
             max-width: none;
             transform-origin: center center;
-            transition: transform 0.1s ease-out;
+            transition: transform 0.1s ease-out, opacity 0.6s ease-in-out;
+            opacity: 1;
             /* Efeito pixelizado e qualidade reduzida */
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;
             filter: contrast(0.4) saturate(0.3) blur(2px) brightness(0.6) sepia(0.8) hue-rotate(30deg) grayscale(0.5);
+        }
+        
+        .panorama-image.fade-out {
+            opacity: 0;
+        }
+        
+        .panorama-image.fade-in {
+            opacity: 1;
         }
         
 
@@ -156,19 +165,27 @@
             -webkit-mask-image: radial-gradient(
                 circle,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 0.95) 30%,
-                rgba(0, 0, 0, 0.8) 50%,
-                rgba(0, 0, 0, 0.5) 70%,
+                rgba(0, 0, 0, 0.98) 20%,
+                rgba(0, 0, 0, 0.95) 35%,
+                rgba(0, 0, 0, 0.85) 50%,
+                rgba(0, 0, 0, 0.65) 65%,
+                rgba(0, 0, 0, 0.4) 75%,
                 rgba(0, 0, 0, 0.2) 85%,
+                rgba(0, 0, 0, 0.1) 92%,
+                rgba(0, 0, 0, 0.05) 96%,
                 rgba(0, 0, 0, 0) 100%
             );
             mask-image: radial-gradient(
                 circle,
                 rgba(0, 0, 0, 1) 0%,
-                rgba(0, 0, 0, 0.95) 30%,
-                rgba(0, 0, 0, 0.8) 50%,
-                rgba(0, 0, 0, 0.5) 70%,
+                rgba(0, 0, 0, 0.98) 20%,
+                rgba(0, 0, 0, 0.95) 35%,
+                rgba(0, 0, 0, 0.85) 50%,
+                rgba(0, 0, 0, 0.65) 65%,
+                rgba(0, 0, 0, 0.4) 75%,
                 rgba(0, 0, 0, 0.2) 85%,
+                rgba(0, 0, 0, 0.1) 92%,
+                rgba(0, 0, 0, 0.05) 96%,
                 rgba(0, 0, 0, 0) 100%
             );
         }
@@ -493,9 +510,11 @@
             }
             
             .location-info {
-                bottom: 80px;
-                right: 15px;
+                bottom: 5px;
+                right: 50%;
+                transform: translateX(50%);
                 font-size: 13px;
+                text-align: center;
             }
             
             .info-panel {
@@ -552,7 +571,7 @@
             }
             
             .controls {
-                bottom: 15px;
+                bottom: 25px;
                 flex-wrap: wrap;
                 justify-content: center;
                 max-width: 95%;
@@ -591,9 +610,11 @@
             }
             
             .location-info {
-                bottom: 70px;
-                right: 10px;
+                bottom: -5px;
+                right: 50%;
+                transform: translateX(50%);
                 font-size: 12px;
+                text-align: center;
             }
             .info-panel {
                 width: calc(100vw - 20px);
@@ -652,7 +673,7 @@
             }
             
             .controls {
-                bottom: 10px;
+                bottom: 20px;
                 gap: 8px;
                 padding: 0 5px;
                 max-width: 95%;
@@ -682,9 +703,11 @@
             }
             
             .location-info {
-                bottom: 65px;
-                right: 5px;
+                bottom: -10px;
+                right: 50%;
+                transform: translateX(50%);
                 font-size: 11px;
+                text-align: center;
             }
             .info-panel {
                 width: calc(100vw - 10px);
@@ -810,7 +833,22 @@
             
             let magicWandActive = false;
             let currentImageIndex = 0;
-            const images = ['PANO_20250615_103245.jpg', 'PANO_2.jpg'];
+            const images = ['PANO_20250615_103245.jpg', 'PANO_2.jpg', 'PANO_3.jpg', 'pANO360.jpg'];
+            
+            // Variáveis do screensaver
+            let screensaverActive = false;
+            let inactivityTimer = null;
+            let screensaverAnimation = null;
+            let lastMouseActivity = Date.now();
+            let screensaverStartTime = 0;
+            let originalTranslateX = 0;
+            let originalScale = 1;
+            let screensaverImageTimer = null;
+            let preloadedImages = {};
+            let isPreloading = false;
+            let slideshowActive = false;
+            let slideshowTimer = null;
+            let slideshowInterval = 8000; // 8 segundos para dar tempo de carregamento entre imagens
 
             
             // Garantir que a tela de carregamento seja removida após um tempo máximo
@@ -836,6 +874,28 @@
             let scale = 1;
             let imageLoaded = false;
 
+            // Função para precarregar imagens em segundo plano
+            function preloadImages() {
+                if (isPreloading) return;
+                isPreloading = true;
+                
+                console.log('Iniciando preload das imagens...');
+                
+                images.forEach((imageSrc, index) => {
+                    if (index !== currentImageIndex && !preloadedImages[imageSrc]) {
+                        const img = new Image();
+                        img.onload = function() {
+                            preloadedImages[imageSrc] = true;
+                            console.log(`Imagem precarregada: ${imageSrc}`);
+                        };
+                        img.onerror = function() {
+                            console.warn(`Erro ao precarregar: ${imageSrc}`);
+                        };
+                        img.src = imageSrc;
+                    }
+                });
+            }
+            
             // Esconder a tela de carregamento quando a imagem estiver carregada
             panoramaImage.onload = function() {
                 imageLoaded = true;
@@ -843,6 +903,12 @@
                 // Definir a posição inicial para centralizar a imagem
                 resetView();
                 console.log('Imagem carregada com sucesso');
+                
+                // Marcar a imagem atual como precarregada
+                preloadedImages[images[currentImageIndex]] = true;
+                
+                // Iniciar preload das outras imagens após um pequeno delay
+                setTimeout(preloadImages, 1000);
             };
             
             // Tratar erro de carregamento da imagem
@@ -900,29 +966,408 @@
                 }
             }
 
+            // Funções do screensaver
+            function startScreensaver() {
+                if (screensaverActive) return;
+                
+                screensaverActive = true;
+                screensaverStartTime = Date.now();
+                originalTranslateX = translateX + currentTranslateX;
+                originalScale = scale;
+                
+                // Iniciar animação do screensaver
+                animateScreensaver();
+                
+                // Trocar imagem a cada 8 segundos durante o screensaver
+                screensaverImageTimer = setInterval(() => {
+                    if (screensaverActive) {
+                        switchImage();
+                    }
+                }, 8000);
+            }
+            
+            function stopScreensaver() {
+                if (!screensaverActive) return;
+                
+                screensaverActive = false;
+                
+                // Parar animações
+                if (screensaverAnimation) {
+                    cancelAnimationFrame(screensaverAnimation);
+                    screensaverAnimation = null;
+                }
+                
+                if (screensaverImageTimer) {
+                    clearInterval(screensaverImageTimer);
+                    screensaverImageTimer = null;
+                }
+                
+                // Voltar à posição original
+                translateX = originalTranslateX;
+                currentTranslateX = 0;
+                scale = originalScale;
+                updateImageTransform();
+            }
+            
+            function animateScreensaver() {
+                if (!screensaverActive) return;
+                
+                const elapsed = (Date.now() - screensaverStartTime) / 1000;
+                
+                // Movimento horizontal suave (pan esquerda/direita)
+                const panSpeed = 0.3;
+                const panAmount = Math.sin(elapsed * panSpeed) * 200;
+                
+                // Zoom in/out suave com limites adequados
+                const zoomSpeed = 0.2;
+                const zoomAmount = 1 + Math.sin(elapsed * zoomSpeed) * 0.15;
+                
+                currentTranslateX = panAmount;
+                // Limitar zoom: mínimo 1.0 (sem zoom out para evitar bordas pretas) e máximo 1.3
+                scale = Math.max(1.0, Math.min(1.3, zoomAmount));
+                
+                updateImageTransform();
+                
+                screensaverAnimation = requestAnimationFrame(animateScreensaver);
+            }
+            
+            function resetInactivityTimer() {
+                lastMouseActivity = Date.now();
+                
+                // Mostrar painel de informações se estiver oculto durante slideshow
+                if (slideshowActive && infoPanel.classList.contains('hidden')) {
+                    infoPanel.classList.remove('hidden');
+                    console.log('Painel de informações mostrado por movimento do mouse');
+                }
+                
+                if (screensaverActive) {
+                    stopScreensaver();
+                }
+                
+                // Pausar slideshow durante interação
+                if (slideshowActive) {
+                    stopSlideshow();
+                }
+                
+                // Limpar timer anterior
+                if (inactivityTimer) {
+                    clearTimeout(inactivityTimer);
+                }
+                
+                // Iniciar novo timer de 6 segundos
+                inactivityTimer = setTimeout(() => {
+                    startScreensaver();
+                    // Retomar slideshow após inatividade
+                    if (!slideshowActive) {
+                        startSlideshow();
+                    }
+                }, 6000);
+            }
+            
+            let slideDirection = 1; // 1 para direita, -1 para esquerda
+            
+            function startSlideshow() {
+                if (slideshowActive) return;
+                
+                slideshowActive = true;
+                console.log('Slideshow iniciado');
+                
+                // Ocultar painel de informações durante slideshow
+                if (!infoPanel.classList.contains('hidden')) {
+                    infoPanel.classList.add('hidden');
+                    console.log('Painel de informações ocultado para slideshow');
+                }
+                
+                // Pré-carregar próximas 3 imagens antes de começar
+                preloadNextImages(3);
+                
+                // Iniciar movimento horizontal suave
+                startHorizontalSlideshow();
+            }
+            
+            function startHorizontalSlideshow() {
+                // Iniciar o loop de imagens com movimento horizontal
+                slideshowTimer = setInterval(() => {
+                    // Pré-carregar próxima imagem antes da transição
+                    preloadNextImages(2);
+                    switchImageWithHorizontalSlide();
+                }, slideshowInterval);
+            }
+            
+            function preloadNextImages(count) {
+                for (let i = 1; i <= count; i++) {
+                    const nextIndex = (currentImageIndex + i) % images.length;
+                    const nextImageSrc = images[nextIndex];
+                    
+                    if (!preloadedImages[nextImageSrc]) {
+                        console.log('Pré-carregando imagem:', nextImageSrc);
+                        const img = new Image();
+                        img.onload = function() {
+                            preloadedImages[nextImageSrc] = true;
+                            console.log('Imagem pré-carregada:', nextImageSrc);
+                        };
+                        img.onerror = function() {
+                            console.error('Erro ao pré-carregar:', nextImageSrc);
+                        };
+                        img.src = nextImageSrc;
+                    }
+                }
+            }
+            
+            function stopSlideshow() {
+                if (!slideshowActive) return;
+                
+                slideshowActive = false;
+                console.log('Slideshow parado');
+                
+                if (slideshowTimer) {
+                    clearInterval(slideshowTimer);
+                    slideshowTimer = null;
+                }
+            }
+            
+            function switchImageWithHorizontalSlide() {
+                // Trocar para próxima imagem
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                
+                console.log(`🎬 Slideshow horizontal - Imagem ${currentImageIndex + 1}/${images.length}: ${images[currentImageIndex]}`);
+                console.log(`📍 Direção: ${slideDirection === 1 ? 'Esquerda → Direita' : 'Direita → Esquerda'}`);
+                
+                // Verificar se a imagem já está pré-carregada
+                if (preloadedImages[images[currentImageIndex]]) {
+                    console.log('✅ Usando imagem pré-carregada:', images[currentImageIndex]);
+                    performHorizontalTransition();
+                } else {
+                    console.log('⏳ Pré-carregando imagem:', images[currentImageIndex]);
+                    // Pré-carregar nova imagem
+                    const newImage = new Image();
+                    
+                    newImage.onload = function() {
+                        preloadedImages[images[currentImageIndex]] = true;
+                        console.log('✅ Imagem carregada, iniciando transição horizontal:', images[currentImageIndex]);
+                        performHorizontalTransition();
+                    };
+                    
+                    newImage.onerror = function() {
+                        console.error('❌ Erro ao carregar imagem:', images[currentImageIndex]);
+                        console.log('🔄 Tentando próxima imagem...');
+                        // Tentar próxima imagem
+                        setTimeout(() => {
+                            switchImageWithHorizontalSlide();
+                        }, 1000);
+                    };
+                    
+                    newImage.src = images[currentImageIndex];
+                }
+            }
+            
+            function switchImageWithFade() {
+                // Salvar transformações atuais
+                const currentTransform = panoramaImage.style.transform;
+                
+                // Trocar para próxima imagem
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                
+                console.log(`Mudando para imagem ${currentImageIndex + 1}/${images.length}: ${images[currentImageIndex]}`);
+                
+                // Verificar se a imagem já está pré-carregada
+                if (preloadedImages[images[currentImageIndex]]) {
+                    console.log('✅ Usando imagem pré-carregada:', images[currentImageIndex]);
+                    performTransition(currentTransform);
+                } else {
+                    console.log('⏳ Pré-carregando imagem:', images[currentImageIndex]);
+                    // Pré-carregar nova imagem
+                    const newImage = new Image();
+                    
+                    newImage.onload = function() {
+                        preloadedImages[images[currentImageIndex]] = true;
+                        console.log('✅ Imagem carregada, iniciando transição:', images[currentImageIndex]);
+                        performTransition(currentTransform);
+                    };
+                    
+                    newImage.onerror = function() {
+                        console.error('❌ Erro ao carregar imagem:', images[currentImageIndex]);
+                        console.log('🔄 Tentando próxima imagem...');
+                        // Tentar próxima imagem
+                        setTimeout(() => {
+                            switchImageWithFade();
+                        }, 1000);
+                    };
+                    
+                    newImage.src = images[currentImageIndex];
+                }
+            }
+            
+            function performHorizontalTransition() {
+                // Configurar transição suave para movimento horizontal
+                panoramaImage.style.transition = 'transform 3s ease-in-out, opacity 0.5s ease-in-out';
+                
+                // Fade out rápido
+                panoramaImage.style.opacity = '0.3';
+                
+                setTimeout(() => {
+                    // Criar nova imagem para garantir carregamento
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        // Trocar imagem
+                        panoramaImage.src = tempImg.src;
+                        
+                        // Calcular movimento horizontal baseado na direção
+                        const moveDistance = slideDirection * 30; // 30% da largura
+                        
+                        // Aplicar movimento horizontal suave
+                        panoramaImage.style.transform = `translateX(${moveDistance}%) scale(1.1)`;
+                        
+                        // Fade in
+                        panoramaImage.style.opacity = '1';
+                        
+                        // Após 2 segundos, voltar ao centro
+                        setTimeout(() => {
+                            panoramaImage.style.transform = 'translateX(0%) scale(1)';
+                            
+                            // Alternar direção para próxima transição
+                            slideDirection *= -1;
+                            
+                            console.log('🎬 Transição horizontal concluída:', images[currentImageIndex]);
+                            console.log('🔄 Próxima direção:', slideDirection === 1 ? 'Esquerda → Direita' : 'Direita → Esquerda');
+                        }, 2000);
+                        
+                        // Restaurar transição normal após completar
+                        setTimeout(() => {
+                            panoramaImage.style.transition = 'transform 0.1s ease-out, opacity 0.5s ease-in-out';
+                        }, 3500);
+                    };
+                    
+                    tempImg.onerror = function() {
+                        console.error('❌ Erro na transição horizontal:', images[currentImageIndex]);
+                        // Restaurar opacity em caso de erro
+                        panoramaImage.style.opacity = '1';
+                        // Alternar direção mesmo em caso de erro
+                        slideDirection *= -1;
+                    };
+                    
+                    tempImg.src = images[currentImageIndex];
+                }, 300); // Tempo para fade out
+            }
+            
+            function performTransition(currentTransform) {
+                // Transição mais lenta para dar tempo de carregamento
+                panoramaImage.style.transition = 'opacity 1.2s ease-in-out';
+                panoramaImage.style.opacity = '0';
+                
+                setTimeout(() => {
+                    // Criar nova imagem para garantir carregamento
+                    const tempImg = new Image();
+                    tempImg.onload = function() {
+                        // Trocar imagem apenas após carregamento completo
+                        panoramaImage.src = tempImg.src;
+                        
+                        // Restaurar transformações imediatamente
+                        panoramaImage.style.transform = currentTransform;
+                        
+                        // Fade in mais lento
+                        panoramaImage.style.opacity = '1';
+                        
+                        // Restaurar transição normal após completar
+                        setTimeout(() => {
+                            panoramaImage.style.transition = 'transform 0.1s ease-out, opacity 1.2s ease-in-out';
+                        }, 1200);
+                        
+                        console.log('Transição concluída para:', images[currentImageIndex]);
+                    };
+                    
+                    tempImg.onerror = function() {
+                        console.error('Erro na transição da imagem:', images[currentImageIndex]);
+                        // Restaurar opacity em caso de erro
+                        panoramaImage.style.opacity = '1';
+                    };
+                    
+                    tempImg.src = images[currentImageIndex];
+                }, 600); // Meio da transição para trocar a imagem
+            }
+            
             // Eventos de mouse
-            panoramaViewer.addEventListener('mousedown', startDrag);
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', endDrag);
+            panoramaViewer.addEventListener('mousedown', (e) => {
+                resetInactivityTimer();
+                startDrag(e);
+            });
+            document.addEventListener('mousemove', (e) => {
+                resetInactivityTimer();
+                drag(e);
+            });
+            document.addEventListener('mouseup', (e) => {
+                resetInactivityTimer();
+                endDrag(e);
+            });
 
             // Eventos de toque
-            panoramaViewer.addEventListener('touchstart', startDrag);
-            document.addEventListener('touchmove', drag);
-            document.addEventListener('touchend', endDrag);
+            panoramaViewer.addEventListener('touchstart', (e) => {
+                resetInactivityTimer();
+                startDrag(e);
+            });
+            document.addEventListener('touchmove', (e) => {
+                resetInactivityTimer();
+                drag(e);
+            });
+            document.addEventListener('touchend', (e) => {
+                resetInactivityTimer();
+                endDrag(e);
+            });
 
             // Botões de controle
-            resetViewBtn.addEventListener('click', resetView);
-            magicWandBtn.addEventListener('click', toggleMagicWand);
-            switchImageBtn.addEventListener('click', switchImage);
-            toggleInfoBtn.addEventListener('click', toggleInfoPanel);
+            resetViewBtn.addEventListener('click', () => {
+                resetInactivityTimer();
+                resetView();
+            });
+            magicWandBtn.addEventListener('click', () => {
+                resetInactivityTimer();
+                toggleMagicWand();
+            });
+            switchImageBtn.addEventListener('click', () => {
+                resetInactivityTimer();
+                switchImage();
+            });
+            toggleInfoBtn.addEventListener('click', () => {
+                resetInactivityTimer();
+                toggleInfoPanel();
+            });
             
             // Event listener para movimento do mouse quando varinha mágica está ativa
-            panoramaViewer.addEventListener('mousemove', handleMagicWandMove);
+            panoramaViewer.addEventListener('mousemove', (e) => {
+                resetInactivityTimer();
+                handleMagicWandMove(e);
+            });
             panoramaViewer.addEventListener('mouseleave', handleMagicWandLeave);
             
             // Event listeners para touch em dispositivos móveis
-            panoramaViewer.addEventListener('touchmove', handleMagicWandTouch);
-            panoramaViewer.addEventListener('touchend', handleMagicWandTouchEnd);
+            panoramaViewer.addEventListener('touchmove', (e) => {
+                resetInactivityTimer();
+                handleMagicWandTouch(e);
+            });
+            panoramaViewer.addEventListener('touchend', (e) => {
+                resetInactivityTimer();
+                handleMagicWandTouchEnd(e);
+            });
+            
+            // Controle de zoom com scroll do mouse
+            panoramaViewer.addEventListener('wheel', (e) => {
+                if (!imageLoaded) return;
+                
+                resetInactivityTimer();
+                e.preventDefault();
+                
+                // Calcular novo zoom
+                const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = scale * zoomFactor;
+                
+                // Aplicar limites de zoom: mínimo 1.0 (sem zoom out) e máximo 3.0
+                scale = Math.max(1.0, Math.min(3.0, newScale));
+                
+                updateImageTransform();
+            });
+            
+            // Iniciar timer de inatividade
+            resetInactivityTimer();
             
 
 
@@ -987,12 +1432,19 @@
             
             // Função para trocar imagem
             function switchImage() {
-                // Mostrar loading
-                loading.style.display = 'flex';
-                imageLoaded = false;
-                
                 // Trocar para a próxima imagem
                 currentImageIndex = (currentImageIndex + 1) % images.length;
+                const nextImageSrc = images[currentImageIndex];
+                
+                // Se a imagem já foi precarregada, não mostrar loading
+                if (!preloadedImages[nextImageSrc]) {
+                    loading.style.display = 'flex';
+                    console.log('Carregando imagem não precarregada:', nextImageSrc);
+                } else {
+                    console.log('Usando imagem precarregada:', nextImageSrc);
+                }
+                
+                imageLoaded = false;
                 
                 // Limpar overlay de revelação
                 removeRevealOverlay();
@@ -1008,7 +1460,12 @@
                 currentTranslateX = 0;
                 
                 // Trocar a imagem
-                panoramaImage.src = images[currentImageIndex];
+                panoramaImage.src = nextImageSrc;
+                
+                // Marcar como precarregada se ainda não estava
+                if (!preloadedImages[nextImageSrc]) {
+                    preloadedImages[nextImageSrc] = true;
+                }
             }
 
 
@@ -1129,6 +1586,12 @@
                     revealOverlay = null;
                 }
             }
+            
+            // Inicializar slideshow automático após carregamento
+            setTimeout(() => {
+                startSlideshow();
+                console.log('Slideshow automático iniciado após 2 segundos');
+            }, 2000);
                
 
                
