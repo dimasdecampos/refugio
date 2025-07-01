@@ -310,6 +310,11 @@
             to { transform: rotate(360deg); }
         }
 
+        .info-panel.hidden {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        
         @media (max-width: 768px) {
             .control-btn {
                 width: 40px;
@@ -351,6 +356,46 @@
                 height: 40px;
                 font-size: 18px;
             }
+            
+            .controls {
+                bottom: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 90%;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+                background-color: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .control-btn:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .info-panel {
+                width: 250px;
+                padding: 15px;
+                left: 5px;
+            }
+            
+            .controls {
+                bottom: 5px;
+                gap: 8px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
         }
     </style>
 </head>
@@ -383,6 +428,7 @@
             <button class="control-btn" id="resetView">↺</button>
             <button class="control-btn magic-wand" id="magicWand" title="Varinha Mágica - Clique para ativar/desativar">🪄</button>
             <button class="control-btn" id="switchImage" title="Trocar Imagem">🖼️</button>
+            <button class="control-btn" id="toggleInfo" title="Ocultar/Mostrar Informações">ℹ️</button>
         </div>
         <div class="loading" id="loading">
             <div class="loading-spinner"></div>
@@ -398,6 +444,8 @@
             const resetViewBtn = document.getElementById('resetView');
             const magicWandBtn = document.getElementById('magicWand');
             const switchImageBtn = document.getElementById('switchImage');
+            const toggleInfoBtn = document.getElementById('toggleInfo');
+            const infoPanel = document.querySelector('.info-panel');
             const loading = document.getElementById('loading');
             
             let magicWandActive = false;
@@ -413,6 +461,11 @@
                     console.log('Tela de carregamento removida pelo timeout');
                 }
             }, 5000);
+            
+            // Função para alternar visibilidade do painel de informações
+            function toggleInfoPanel() {
+                infoPanel.classList.toggle('hidden');
+            }
 
             let isDragging = false;
             let startX = 0;
@@ -503,6 +556,7 @@
             resetViewBtn.addEventListener('click', resetView);
             magicWandBtn.addEventListener('click', toggleMagicWand);
             switchImageBtn.addEventListener('click', switchImage);
+            toggleInfoBtn.addEventListener('click', toggleInfoPanel);
             
             // Event listener para cliques na imagem quando varinha mágica está ativa
             panoramaViewer.addEventListener('click', handleMagicWandClick);
