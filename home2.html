@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Refúgio Beira Rio - Um Santuário em Construção</title>
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #0a0a0a;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section with Slideshow */
+        .hero-section {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .swiper {
+            width: 100%;
+            height: 100%;
+        }
+
+        .swiper-slide {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 15%, transparent 100%);
+        }
+
+        /* Dark Overlay */
+        .dark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 99;
+            transition: all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .dark-overlay.shrink {
+             height: 120px;
+             background: rgba(0, 0, 0, 0.4);
+         }
+
+        /* Animated Logo Overlay */
+        .logo-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .logo-part {
+            opacity: 0;
+            transform: scale(0) rotate(180deg);
+            transition: all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            filter: drop-shadow(2px 2px 6px rgba(0,0,0,0.5)) brightness(0) invert(1);
+        }
+
+        .logo-part.animate {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+        }
+
+        .logo-part-1 {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            animation-delay: 0.5s;
+        }
+
+        .logo-part-2 {
+            width: 200px;
+            height: auto;
+            margin-bottom: 15px;
+            animation-delay: 1.2s;
+        }
+
+        .logo-part-3 {
+            width: 150px;
+            height: auto;
+            animation-delay: 1.9s;
+        }
+
+        /* Logo final position */
+         .logo-container.final-position {
+             position: fixed;
+             top: 20px;
+             left: 20px;
+             transform: scale(1.0);
+             flex-direction: row;
+             transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+             z-index: 1000;
+             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+         }
+
+         .logo-container.final-position .logo-part {
+              transform: scale(1);
+              margin: 0 14px;
+              filter: drop-shadow(2px 2px 6px rgba(0,0,0,0.5)) brightness(0) invert(1);
+          }
+
+          .logo-container.final-position .logo-part-1 {
+              width: 140px;
+          }
+
+          .logo-container.final-position .logo-part-2 {
+              width: 230px;
+          }
+
+          .logo-container.final-position .logo-part-3 {
+              width: 180px;
+          }
+
+        /* Top Right Controls */
+        .top-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .top-controls.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .social-link:hover {
+            background: #4caf50;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(76,175,80,0.3);
+        }
+
+        /* Bottom Right Location */
+        .location-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            padding: 10px 15px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .location-info.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .location-info i {
+            color: #4caf50;
+            font-size: 1.1rem;
+        }
+
+        /* Hero Caption */
+        .hero-caption {
+                 position: absolute;
+                 bottom: 20px;
+                 left: 20px;
+                 text-align: left;
+                 color: white;
+                 z-index: 3;
+                 max-width: 700px;
+                 width: 60%;
+                 padding: 10px 15px;
+                 background: rgba(0, 0, 0, 0.3);
+                 backdrop-filter: blur(8px);
+                 border-radius: 25px;
+                 opacity: 0;
+                 transform: translateX(-100px);
+                 transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+         }
+
+         .hero-caption.show {
+                 opacity: 1;
+                 transform: translateX(0);
+                 border: 1px solid rgba(255, 255, 255, 0.1);
+                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+             }
+
+        .caption-text {
+             font-size: 1.1rem;
+             font-weight: 400;
+             line-height: 1.5;
+             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+             opacity: 0;
+             transform: translateY(20px);
+             animation: fadeInUp 1s ease-out 6s forwards;
+         }
+
+
+
+        .highlight {
+             color: white;
+             font-weight: 400;
+         }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+         @media (max-width: 768px) {
+             .logo-container.final-position {
+                 transform: scale(0.8);
+                 top: 15px;
+                 left: 15px;
+             }
+             
+             .logo-container.final-position .logo-part {
+                 transform: scale(1);
+                 margin: 0 5px;
+             }
+
+             .hero-caption {
+                 bottom: 15px;
+                 left: 15px;
+                 right: 15px;
+                 max-width: none;
+                 width: auto;
+                 padding: 8px 12px;
+                 font-size: 0.85rem;
+             }
+
+             .caption-text {
+                 font-size: 0.8rem;
+                 line-height: 1.3;
+             }
+
+             .top-controls {
+                 top: 15px;
+                 right: 15px;
+                 gap: 8px;
+             }
+
+             .social-link {
+                 width: 35px;
+                 height: 35px;
+                 font-size: 0.8rem;
+             }
+
+             .location-info {
+                 bottom: 15px;
+                 right: 15px;
+                 font-size: 0.75rem;
+                 padding: 8px 12px;
+                 gap: 6px;
+             }
+
+             .location-info i {
+                 font-size: 0.9rem;
+             }
+
+             .swiper-button-next,
+             .swiper-button-prev {
+                 width: 40px;
+                 height: 40px;
+                 font-size: 14px;
+             }
+
+             .swiper-pagination-bullet {
+                 width: 8px;
+                 height: 8px;
+                 margin: 0 3px;
+             }
+
+             .dark-overlay.shrink {
+                 height: 90px;
+             }
+         }
+
+         /* Extra small devices */
+         @media (max-width: 480px) {
+             .logo-container.final-position {
+                 transform: scale(0.5);
+                 top: 5px;
+                 left: 5px;
+             }
+
+             .hero-caption {
+                 bottom: 120px;
+                 left: 10px;
+                 right: 10px;
+                 padding: 8px 12px;
+                 font-size: 0.8rem;
+                 border-radius: 15px;
+             }
+
+             .caption-text {
+                 font-size: 0.75rem;
+                 line-height: 1.3;
+             }
+
+             .top-controls {
+                 position: fixed;
+                 bottom: 10px;
+                 left: 50%;
+                 transform: translateX(-50%);
+                 right: auto;
+                 top: auto;
+                 flex-direction: row;
+                 justify-content: center;
+                 gap: 8px;
+             }
+
+             .social-link {
+                 width: 35px;
+                 height: 35px;
+                 font-size: 0.75rem;
+             }
+
+             .location-info {
+                 bottom: 60px;
+                 left: 10px;
+                 right: 10px;
+                 font-size: 0.7rem;
+                 padding: 6px 10px;
+                 gap: 4px;
+                 border-radius: 15px;
+                 justify-content: center;
+             }
+
+             .location-info i {
+                 font-size: 0.8rem;
+             }
+
+             .swiper-button-next,
+             .swiper-button-prev {
+                 width: 35px;
+                 height: 35px;
+                 font-size: 12px;
+                 bottom: 110px;
+                 top: auto;
+             }
+
+             .swiper-button-next {
+                 right: 10px;
+             }
+
+             .swiper-button-prev {
+                 left: 10px;
+             }
+
+             .swiper-pagination {
+                 bottom: 85px !important;
+             }
+
+             .swiper-pagination-bullet {
+                 width: 6px;
+                 height: 6px;
+                 margin: 0 2px;
+             }
+
+             .dark-overlay.shrink {
+                 height: 50px;
+             }
+         }
+
+        /* Swiper custom styles */
+        .swiper-pagination {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .swiper-pagination.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .swiper-pagination-bullet {
+            background: rgba(255,255,255,0.5);
+            opacity: 0.7;
+            width: 12px;
+            height: 12px;
+        }
+
+        .swiper-pagination-bullet-active {
+            background: #4caf50;
+            opacity: 1;
+            box-shadow: 0 0 15px rgba(76,175,80,0.5);
+        }
+
+        .swiper-button-next,
+        .swiper-button-prev {
+            color: rgba(255,255,255,0.7);
+            background: rgba(0,0,0,0.3);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .swiper-button-next {
+            transform: translateX(50px);
+        }
+
+        .swiper-button-prev {
+            transform: translateX(-50px);
+        }
+
+        .swiper-button-next.show,
+        .swiper-button-prev.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .swiper-button-next:hover,
+        .swiper-button-prev:hover {
+            color: #4caf50;
+            background: rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Slideshow -->
+    <section class="hero-section">
+        <!-- Top Right Controls -->
+        <div class="top-controls">
+            <a href="https://www.instagram.com/refugiobeirario/" class="social-link" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=5511933896026" class="social-link" target="_blank">
+                <img src="https://refugiobeirario.com/whatsapp.png" alt="WhatsApp" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+            </a>
+        </div>
+
+        <!-- Bottom Right Location -->
+        <div class="location-info">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Natividade da Serra - SP</span>
+        </div>
+
+        <!-- Dark Overlay -->
+        <div class="dark-overlay" id="darkOverlay"></div>
+
+        <!-- Animated Logo Container -->
+        <div class="logo-container" id="logoContainer">
+            <img src="logo1.svg" alt="Logo Parte 1" class="logo-part logo-part-1" id="logoPart1">
+            <img src="logo2.svg" alt="Logo Parte 2" class="logo-part logo-part-2" id="logoPart2">
+            <img src="logo3.svg" alt="Logo Parte 3" class="logo-part logo-part-3" id="logoPart3">
+        </div>
+
+        <!-- Hero Caption -->
+        <div class="hero-caption">
+            <p class="caption-text">
+                <span>Se você não construir o seu sonho, alguém vai te contratar para construir o dele</span>
+            </p>
+        </div>
+        
+        <div class="swiper heroSwiper">
+            <div class="swiper-wrapper">                
+                <div class="swiper-slide" style="background-image: url('img/IMG_20250502_161632.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>                
+                <div class="swiper-slide" style="background-image: url('img/IMG_20250504_142933.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>
+                <div class="swiper-slide" style="background-image: url('img/IMG_20250504_143659.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>
+                <div class="swiper-slide" style="background-image: url('img/IMG_20250504_143758.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>
+                <div class="swiper-slide" style="background-image: url('img/IMG_20250615_124243.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>
+                <div class="swiper-slide" style="background-image: url('img/IMG_20250629_122042.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </section>
+
+
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <script>
+        // Logo Animation Sequence
+        function startLogoAnimation() {
+            const logoContainer = document.getElementById('logoContainer');
+            const logoPart1 = document.getElementById('logoPart1');
+            const logoPart2 = document.getElementById('logoPart2');
+            const logoPart3 = document.getElementById('logoPart3');
+            const darkOverlay = document.getElementById('darkOverlay');
+            
+            // Sequential animation with advanced effects
+            setTimeout(() => {
+                logoPart1.classList.add('animate');
+            }, 800);
+            
+            setTimeout(() => {
+                logoPart2.classList.add('animate');
+            }, 1600);
+            
+            setTimeout(() => {
+                logoPart3.classList.add('animate');
+            }, 2400);
+            
+            // Move to final position after 5 seconds
+            setTimeout(() => {
+                logoContainer.classList.add('final-position');
+            }, 5000);
+            
+            // Shrink dark overlay after logo animation
+            setTimeout(() => {
+                darkOverlay.classList.add('shrink');
+                // Start UI elements animation sequence
+                startUIAnimation();
+            }, 5500);
+        }
+
+        // UI Elements Animation Sequence
+        function startUIAnimation() {
+            const topControls = document.querySelector('.top-controls');
+            const heroCaption = document.querySelector('.hero-caption');
+            const locationInfo = document.querySelector('.location-info');
+            const swiperPagination = document.querySelector('.swiper-pagination');
+            const swiperButtonNext = document.querySelector('.swiper-button-next');
+            const swiperButtonPrev = document.querySelector('.swiper-button-prev');
+            
+            // 1. Top controls (0.5s after overlay shrinks)
+            setTimeout(() => {
+                topControls.classList.add('show');
+            }, 500);
+            
+            // 2. Hero caption (1s after overlay shrinks)
+            setTimeout(() => {
+                heroCaption.classList.add('show');
+            }, 1000);
+            
+            // 3. Location info (1.5s after overlay shrinks)
+            setTimeout(() => {
+                locationInfo.classList.add('show');
+            }, 1500);
+            
+            // 4. Navigation buttons and pagination (2s after overlay shrinks)
+            setTimeout(() => {
+                swiperPagination.classList.add('show');
+                swiperButtonNext.classList.add('show');
+                swiperButtonPrev.classList.add('show');
+            }, 2000);
+        }
+
+        // Initialize Swiper with enhanced settings
+        var swiper = new Swiper(".heroSwiper", {
+            spaceBetween: 0,
+            centeredSlides: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+                dynamicBullets: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            loop: true,
+            effect: "fade",
+            fadeEffect: {
+                crossFade: true
+            },
+            speed: 1000,
+        });
+
+        // Initialize animations
+        window.addEventListener('load', () => {
+            startLogoAnimation();
+        });
+    </script>
+</body>
+</html>
