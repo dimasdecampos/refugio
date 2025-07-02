@@ -3,53 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌿 Refúgio Beira Rio - Pousada Rural em Natividade da Serra | Turismo Rural SP</title>
-    
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="Refúgio Beira Rio - Pousada rural em construção em Natividade da Serra, SP. Experiência única de turismo rural com vista para o rio. Reserve sua estadia em meio à natureza.">
-    <meta name="keywords" content="pousada rural, turismo rural, Natividade da Serra, hospedagem rural, refúgio beira rio, turismo SP, natureza, rio">
-    <meta name="author" content="Refúgio Beira Rio">
-    <meta name="robots" content="index, follow">
-    <meta name="language" content="pt-BR">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://refugiobeirario.com/">
-    <meta property="og:title" content="Refúgio Beira Rio - Pousada Rural em Natividade da Serra">
-    <meta property="og:description" content="Pousada rural em construção em Natividade da Serra, SP. Experiência única de turismo rural com vista para o rio.">
-    <meta property="og:image" content="https://refugiobeirario.com/img/IMG_20240316_064801.jpg">
-    <meta property="og:locale" content="pt_BR">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://refugiobeirario.com/">
-    <meta property="twitter:title" content="Refúgio Beira Rio - Pousada Rural em Natividade da Serra">
-    <meta property="twitter:description" content="Pousada rural em construção em Natividade da Serra, SP. Experiência única de turismo rural com vista para o rio.">
-    <meta property="twitter:image" content="https://refugiobeirario.com/img/IMG_20240316_064801.jpg">
-    
-    <!-- DNS prefetch and preconnect for external resources -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Preload critical resources -->
-    <link rel="preload" href="LOGO-NOVA.svg" as="image" type="image/svg+xml">
-    <link rel="preload" href="img/IMG_20240316_064801.jpg" as="image">
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"></noscript>
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://refugiobeirario.com/">
-    
-    <!-- Swiper CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    
-    <!-- Font loading optimization handled by preload above -->
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Refúgio Beira Rio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+ 
     <style>
         * {
             margin: 0;
@@ -58,27 +15,58 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #0a0a0a;
-            overflow: hidden;
-            height: 100vh;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            background: #000;
         }
 
-        html {
-            overflow: hidden;
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
 
-        /* Hero Section with Slideshow */
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .logo-container {
+            text-align: center;
+            animation: logoFloat 2s ease-in-out infinite alternate;
+        }
+
+        .logo {
+             width: 420px;
+             height: auto;
+             filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(0, 0, 0, 0.6));
+             transition: transform 0.3s ease;
+         }
+
+        @keyframes logoFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* Main Container */
         .hero-section {
-            height: 100vh;
             position: relative;
+            width: 100%;
+            height: 100vh;
             overflow: hidden;
         }
 
-        .swiper {
+        /* Swiper Styles */
+        .hero-swiper {
             width: 100%;
             height: 100%;
         }
@@ -88,1134 +76,725 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            will-change: transform;
-            backface-visibility: hidden;
-        }
-
-        .swiper-slide img {
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .slide-overlay {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 15%, transparent 100%);
-            pointer-events: none;
-        }
-
-        /* Dark Overlay */
-        .dark-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 99;
-            transition: all 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            pointer-events: none;
+            background: linear-gradient(
+                45deg,
+                rgba(0,0,0,0.4) 0%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.4) 100%
+            );
+            z-index: 1;
         }
 
-        .dark-overlay.shrink {
-             height: 120px;
-             background: rgba(0, 0, 0, 0.4);
-             pointer-events: none;
-         }
-
-        /* Animated Logo Overlay */
-        .logo-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-        }
-
-        .logo-part {
-            opacity: 0;
-            transform: scale(0) rotate(180deg);
-            transition: all 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            filter: drop-shadow(2px 2px 6px rgba(0,0,0,0.5)) brightness(0) invert(1);
-            will-change: transform, opacity;
-            backface-visibility: hidden;
-        }
-
-        .logo-part.animate {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-        }
-
-        .logo-part-1 {
-            width: 400px;
-            height: auto;
-            animation-delay: 0.5s;
-        }
-
-        /* Logo final position */
-         .logo-container.final-position {
-             position: fixed;
-             top: 20px;
-             left: 20px;
-             transform: scale(1.0);
-             transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-             z-index: 1000;
-             filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-         }
-
-         .logo-container.final-position .logo-part {
-              transform: scale(1);
-              margin: 0;
-              filter: drop-shadow(2px 2px 6px rgba(0,0,0,0.5)) brightness(0) invert(1);
-          }
-
-          .logo-container.final-position .logo-part-1 {
-              width: 300px;
-          }
-
-        /* Top Right Controls */
-        .top-controls {
+        /* Logo Fixed Position */
+        .fixed-logo {
             position: fixed;
             top: 20px;
-            right: 20px;
-            transform: translateX(100px);
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
-            display: flex;
-            gap: 10px;
             opacity: 0;
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: fadeInDown 1s ease 2s forwards;
         }
 
-        .top-controls.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
+        .fixed-logo::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 100px;
             background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 0 0 20px 20px;
+            z-index: -1;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
-        .social-link:hover {
-            background: #4caf50;
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(76,175,80,0.3);
-        }
-
-        /* Bottom Right Location */
-        .location-info {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            padding: 10px 15px;
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            font-size: 0.9rem;
-            font-weight: 500;
-            opacity: 0;
-            transform: translateX(100px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .location-info.show {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .location-info i {
-            color: #ffffff;
-            font-size: 1.1rem;
-        }
-
-        /* Hero Caption */
-        .hero-caption {
-                 position: absolute;
-                 bottom: 20px;
-                 left: 20px;
-                 text-align: left;
-                 color: white;
-                 z-index: 3;
-                 max-width: 700px;
-                 width: fit-content;
-                 min-width: 200px;
-                 padding: 10px 15px;
-                 background: rgba(0, 0, 0, 0.3);
-                 backdrop-filter: blur(8px);
-                 border-radius: 25px;
-                 opacity: 0;
-                 transform: translateX(-100px);
-                 transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        .fixed-logo img {
+             width: 220px;
+             height: auto;
+             filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.6));
          }
 
-         .hero-caption.show {
-                 opacity: 1;
-                 transform: translateX(0);
-                 border: 1px solid rgba(255, 255, 255, 0.1);
-                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-             }
-
-        .caption-text {
-             font-size: 1.1rem;
-             font-weight: 400;
-             line-height: 1.5;
-             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-             opacity: 0;
-             transform: translateY(20px);
-             animation: fadeInUp 1s ease-out 6s forwards;
-         }
-
-
-
-        .highlight {
-             color: white;
-             font-weight: 400;
-         }
-
-        @keyframes fadeInUp {
-            to {
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-30px);
+            }
+            100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(-50%) translateY(0);
             }
         }
 
-        /* Tablet and smaller screens */
-         @media (max-width: 768px) {
-             .logo-part-1 {
-                 width: 250px;
-             }
 
-             .logo-container.final-position {
-                 transform: translateX(-50%) scale(0.7);
-                 top: 10px;
-                 left: 50%;
-             }
-             
-             .logo-container.final-position .logo-part {
-                 transform: scale(1);
-                 margin: 0;
-             }
 
-             .hero-caption {
-                 bottom: 20px;
-                 left: 20px;
-                 right: 20px;
-                 max-width: none;
-                 width: fit-content;
-                 min-width: 200px;
-                 padding: 12px 16px;
-                 font-size: 0.9rem;
-             }
-
-             .caption-text {
-                 font-size: 0.85rem;
-                 line-height: 1.4;
-             }
-
-             .top-controls {
-                 top: 10px;
-                 right: 10px;
-                 gap: 10px;
-                 transform: translateX(100px);
-             }
-             
-             .top-controls.show {
-                 transform: translateX(0);
-             }
-
-             .social-link {
-                 width: 40px;
-                 height: 40px;
-                 font-size: 0.9rem;
-             }
-
-             .location-info {
-                 bottom: 20px;
-                 right: 20px;
-                 font-size: 0.8rem;
-                 padding: 10px 14px;
-                 gap: 8px;
-             }
-
-             .location-info i {
-                 font-size: 1rem;
-             }
-
-             .swiper-button-next,
-             .swiper-button-prev {
-                 width: 45px;
-                 height: 45px;
-                 font-size: 16px;
-             }
-
-             .swiper-pagination-bullet {
-                 width: 10px;
-                 height: 10px;
-                 margin: 0 4px;
-             }
-
-             .dark-overlay.shrink {
-                 height: 80px;
-             }
-         }
-
-         /* Mobile devices */
-         @media (max-width: 480px) {
-             .logo-part-1 {
-                 width: 200px;
-             }
-
-             .logo-container.final-position {
-                 transform: scale(0.5);
-                 top: -10px;
-                 left: 50%;
-                 transform: translateX(-50%) scale(0.5);
-             }
-
-             .hero-caption {
-                 bottom: 180px;
-                 left: 15px;
-                 right: 15px;
-                 width: fit-content;
-                 min-width: 150px;
-                 max-width: calc(100% - 30px);
-                 padding: 10px 15px;
-                 font-size: 0.85rem;
-                 border-radius: 20px;
-                 backdrop-filter: blur(10px);
-             }
-
-             .caption-text {
-                 font-size: 0.8rem;
-                 line-height: 1.4;
-             }
-
-             .top-controls {
-                 position: fixed;
-                 bottom: 20px;
-                 left: 50%;
-                 transform: translateX(-50%);
-                 right: auto;
-                 top: auto;
-                 flex-direction: row;
-                 justify-content: center;
-                 gap: 15px;
-                 background: rgba(0, 0, 0, 0.3);
-                 padding: 10px 20px;
-                 border-radius: 25px;
-                 backdrop-filter: blur(10px);
-                 z-index: 1001;
-             }
-
-             .top-controls.show {
-                 opacity: 1;
-                 transform: translateX(-50%);
-             }
-
-             .social-link {
-                 width: 40px;
-                 height: 40px;
-                 font-size: 0.9rem;
-             }
-
-             .location-info {
-                 bottom: 80px;
-                 left: 15px;
-                 right: 15px;
-                 font-size: 0.75rem;
-                 padding: 8px 12px;
-                 gap: 6px;
-                 border-radius: 20px;
-                 justify-content: center;
-                 backdrop-filter: blur(10px);
-             }
-
-             .location-info i {
-                 font-size: 0.9rem;
-             }
-
-             /* Slider controls visible on mobile */
-             .swiper-button-next,
-             .swiper-button-prev {
-                 width: 35px;
-                 height: 35px;
-                 font-size: 14px;
-             }
-
-             .swiper-pagination {
-                 bottom: 55px;
-             }
-
-             .swiper-pagination-bullet {
-                 width: 8px;
-                 height: 8px;
-                 margin: 0 2px;
-             }
-
-             .dark-overlay.shrink {
-                 height: 60px;
-             }
-         }
-
-         /* Very small devices */
-         @media (max-width: 360px) {
-             .logo-part-1 {
-                 width: 180px;
-             }
-
-             .logo-container.final-position {
-                 transform: translateX(-50%) scale(0.4);
-                 top: 5px;
-                 left: 50%;
-             }
-
-             .hero-caption {
-                 bottom: 170px;
-                 left: 10px;
-                 right: 10px;
-                 width: fit-content;
-                 min-width: 120px;
-                 max-width: calc(100% - 20px);
-                 padding: 8px 12px;
-                 font-size: 0.8rem;
-             }
-
-             .caption-text {
-                 font-size: 0.75rem;
-             }
-
-             .top-controls {
-                 bottom: 15px;
-                 gap: 12px;
-                 padding: 8px 16px;
-                 z-index: 1001;
-             }
-
-             .top-controls.show {
-                 opacity: 1;
-                 transform: translateX(-50%);
-             }
-
-             .social-link {
-                 width: 36px;
-                 height: 36px;
-                 font-size: 0.8rem;
-             }
-
-             .location-info {
-                 bottom: 70px;
-                 left: 10px;
-                 right: 10px;
-                 padding: 6px 10px;
-                 font-size: 0.7rem;
-             }
-
-             /* Slider controls visible on mobile */
-             .swiper-button-next,
-             .swiper-button-prev {
-                 width: 30px;
-                 height: 30px;
-                 font-size: 12px;
-             }
-
-             .swiper-pagination {
-                 bottom: 50px;
-             }
-
-             .swiper-pagination-bullet {
-                 width: 6px;
-                 height: 6px;
-                 margin: 0 1px;
-             }
-         }
-
-        /* Swiper custom styles */
-        .swiper-pagination {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            z-index: 1002;
-            pointer-events: auto;
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         }
 
-        .swiper-pagination.show {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        .swiper-pagination-bullet {
-            background: rgba(255,255,255,0.5);
-            opacity: 0.7;
-            width: 12px;
-            height: 12px;
-        }
-
-        .swiper-pagination-bullet-active {
-            background: #4caf50;
-            opacity: 1;
-            box-shadow: 0 0 15px rgba(76,175,80,0.5);
-        }
-
+        /* Navigation Buttons */
         .swiper-button-next,
         .swiper-button-prev {
-            color: rgba(255,255,255,0.4);
-            background: rgba(0,0,0,0.1);
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
+            background: rgba(5, 5, 5, 0.45);
             border-radius: 50%;
-            backdrop-filter: blur(5px);
+            color: white;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             opacity: 0;
-            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1002;
-            pointer-events: auto;
-            cursor: pointer;
-        }
-
-        .swiper-button-next {
-            transform: translateX(50px) translateY(-50%);
-        }
-
-        .swiper-button-prev {
-            transform: translateX(-50px) translateY(-50%);
-        }
-
-        .swiper-button-next.show,
-        .swiper-button-prev.show {
-            opacity: 0.6;
-            transform: translateX(0) translateY(-50%);
-            pointer-events: auto;
+            animation: fadeIn 1s ease 3s forwards;
         }
 
         .swiper-button-next:hover,
         .swiper-button-prev:hover {
-            color: rgba(255,255,255,0.8);
-            background: rgba(0,0,0,0.3);
-            opacity: 0.9;
+            background: rgba(76, 175, 80, 0.45);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            transform: scale(1.1);
+            box-shadow: 0 8px 32px rgba(76, 175, 80, 0.3);
+            border: 1px solid rgba(76, 175, 80, 0.4);
         }
 
-        /* Mobile stacked images layout */
-        .mobile-slide {
-            display: none;
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            font-size: 16px;
+            font-weight: bold;
         }
 
-        .desktop-slide {
-            display: block;
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
-        .mobile-stack {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100%;
+        /* Pagination */
+        .swiper-pagination {
+            bottom: 30px;
+            opacity: 0;
+            animation: fadeIn 1s ease 3.5s forwards;
         }
 
-        .mobile-image {
-            flex: 1;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-            will-change: transform;
-            backface-visibility: hidden;
+        .swiper-pagination-bullet {
+            width: 16px;
+            height: 16px;
+            background: rgba(5, 5, 5, 0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            opacity: 0.8;
+            margin: 0 5px;
+            transition: all 0.3s ease;
         }
 
-        .mobile-image img {
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
+        .swiper-pagination-bullet-active {
+            background: #4caf50;
+            border-color: #4caf50;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(76,175,80,0.6);
         }
-        
-        /* Loading states and transitions */
-        .swiper-slide[data-bg] {
-            background-color: #1a1a1a;
-            transition: background-image 0.3s ease-in-out;
-        }
-        
-        .swiper-slide[data-bg].loaded {
-            background-color: transparent;
-        }
-        
-        .mobile-image[data-bg] {
-            background-color: #1a1a1a;
-            transition: background-image 0.3s ease-in-out;
-        }
-        
-        .mobile-image[data-bg].loaded {
-            background-color: transparent;
-        }
-        
-        /* Performance optimizations */
-        body.loading * {
-            animation-play-state: paused !important;
-            transition: none !important;
-        }
-        
-        /* Image optimization */
-        img {
-            max-width: 100%;
-            height: auto;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: optimize-contrast;
-            image-rendering: crisp-edges;
-        }
-        
-        /* Critical resource optimization */
-        .swiper-slide, .mobile-image {
-            contain: layout style paint;
-            transform: translateZ(0);
-        }
-        
-        /* Reduce layout shifts */
-        .swiper-container {
-            min-height: 100vh;
-        }
-        
-        /* Optimize animations */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+
+
+
+        @keyframes fadeInRight {
+            0% {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
 
-        .mobile-image:not(:last-child) {
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+
+
+        @keyframes fadeInLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+             .fixed-logo img {
+                 width: 150px;
+                 filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 30px rgba(0, 0, 0, 0.6));
+             }
+
+             .logo {
+                 width: 300px;
+                 filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 50px rgba(0, 0, 0, 0.6));
+             }
+
+             .logo-container {
+                 padding: 40px;
+                 max-width: 95%;
+                 max-height: 95%;
+             }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 40px;
+                height: 40px;
+                background: rgba(5, 5, 5, 0.45);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            }
+
+            .swiper-button-next::after,
+            .swiper-button-prev::after {
+                font-size: 14px;
+            }
+
+            .swiper-pagination-bullet {
+                width: 14px;
+                height: 14px;
+                margin: 0 3px;
+                background: rgba(5, 5, 5, 0.45);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            }
+
+
+
+
         }
 
         @media (max-width: 480px) {
-            .mobile-slide {
-                display: block;
+             .fixed-logo img {
+                 width: 130px;
+                 filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 25px rgba(0, 0, 0, 0.6));
+             }
+
+             .logo {
+                 width: 240px;
+                 filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 40px rgba(0, 0, 0, 0.6));
+             }
+
+             .logo-container {
+                 width: 140px;
+                 height: 65px;
+                 padding: 10px;
+                 display: flex;
+                 align-items: center;
+                 justify-content: center;
+             }
+
+             .fixed-logo::before {
+                 width: 155px;
+                 height: 70px;
+                 top: -20px;
+             }
+
+            .swiper-button-next,
+            .swiper-button-prev {
+                width: 35px;
+                height: 35px;
+                background: rgba(5, 5, 5, 0.45);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             }
 
-            .desktop-slide {
-                display: none;
+            .swiper-pagination {
+                bottom: 20px;
             }
+
+
+            }
+
+
+            
+
+            .location-info {
+                bottom: 15px;
+                left: 15px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        
+
+        /* Custom Swiper Effects */
+        .swiper-slide-active {
+            z-index: 2;
+        }
+
+
+
+        /* Hamburger Menu */
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+        }
+
+        .hamburger-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hamburger-btn:hover {
+            background: rgba(0, 0, 0, 0.6);
+            transform: scale(1.05);
+        }
+
+        .hamburger-line {
+            width: 24px;
+            height: 3px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.active .hamburger-line:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .hamburger-btn.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-btn.active .hamburger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .menu-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .menu-item i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-info {
+            position: absolute;
+            top: 60px;
+            left: 220px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-info.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        .menu-separator {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 8px 16px;
+        }
+
+        .social-item {
+            text-decoration: none;
+            color: white;
+        }
+
+        .social-item:hover {
+            color: white;
         }
     </style>
-    
-    <!-- Structured Data JSON-LD -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "LodgingBusiness",
-        "name": "Refúgio Beira Rio",
-        "description": "Pousada rural em construção em Natividade da Serra, SP. Experiência única de turismo rural com vista para o rio.",
-        "url": "https://refugiobeirario.com",
-        "telephone": "+55-11-93389-6026",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Natividade da Serra",
-            "addressRegion": "SP",
-            "addressCountry": "BR"
-        },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "-23.4667",
-            "longitude": "-45.4667"
-        },
-        "sameAs": [
-            "https://www.instagram.com/refugiobeirario/",
-            "https://api.whatsapp.com/send?phone=5511933896026"
-        ],
-        "amenityFeature": [
-            {
-                "@type": "LocationFeatureSpecification",
-                "name": "Vista para o Rio"
-            },
-            {
-                "@type": "LocationFeatureSpecification",
-                "name": "Turismo Rural"
-            }
-        ]
-    }
-    </script>
 </head>
 <body>
-    <!-- Hero Slideshow -->
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="logo-container">
+            <img src="LOGO-NOVA.svg" alt="Refúgio Beira Rio" class="logo">
+        </div>
+    </div>
+
+    <!-- Hero Section -->
     <section class="hero-section">
-        <!-- Top Right Controls -->
-        <div class="top-controls">
-            <a href="https://www.instagram.com/refugiobeirario/" class="social-link" target="_blank">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://api.whatsapp.com/send?phone=5511933896026" class="social-link" target="_blank">
-                <i class="fab fa-whatsapp"></i>
-            </a>
+        <!-- Fixed Logo -->
+        <div class="fixed-logo">
+            <img src="LOGO-NOVA.svg" alt="Refúgio Beira Rio">
         </div>
 
-        <!-- Bottom Right Location -->
-        <div class="location-info">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>Natividade da Serra - SP</span>
-        </div>
-
-        <!-- Dark Overlay -->
-        <div class="dark-overlay" id="darkOverlay"></div>
-
-        <!-- Animated Logo Container -->
-        <div class="logo-container" id="logoContainer">
-            <img src="LOGO-NOVA.svg" alt="Refúgio Beira Rio" class="logo-part logo-part-1" id="logoPart1">
-        </div>
-
-        <!-- Hero Caption -->
-        <div class="hero-caption">
-            <p class="caption-text">
-                <span>Em Construção</span>
-            </p>
-        </div>
-        
-        <div class="swiper heroSwiper">
-            <div class="swiper-wrapper">                
-                <!-- Desktop slides - single images -->
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240316_064801.jpg">
-                    <div class="slide-overlay"></div>
+        <!-- Hamburger Menu -->
+        <div class="hamburger-menu">
+            <button class="hamburger-btn" id="hamburgerBtn">
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+                <div class="hamburger-line"></div>
+            </button>
+            
+            <div class="menu-dropdown" id="menuDropdown">
+                <a href="https://maps.app.goo.gl/KPtGbsAjbQS3esEq5" target="_blank" class="menu-item" data-info="Natividade da Serra, SP">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Localização</span>
+                </a>
+                <div class="menu-item" data-info="(11)93389 6026 | dimasrafting@gmail.com">
+                    <i class="fas fa-phone"></i>
+                    <span>Contato</span>
                 </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240329_104654.jpg">
-                    <div class="slide-overlay"></div>
+                <div class="menu-item" data-info="Site em construção">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Informações</span>
                 </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240602_075124.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240602_075433.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240716_143458.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240721_143131.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240721_143246.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20240721_143533.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250125_171341.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250309_103854.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250315_105540.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250315_105750.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250502_161632.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250504_142933.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250504_143659.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250504_143758.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250615_124243.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide desktop-slide" data-bg="img/IMG_20250629_122042.jpg">
-                    <div class="slide-overlay"></div>
-                </div>
+                <div class="menu-separator"></div>
+                <a href="https://www.instagram.com/refugiobeirario/" target="_blank" class="menu-item social-item" data-info="Siga nosso Instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                </a>
                 
-                <!-- Mobile slides - 3 stacked images -->
-                <div class="swiper-slide mobile-slide">
-                    <div class="mobile-stack">
-                        <div class="mobile-image" data-bg="img/IMG_20240316_064801.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20240329_104654.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20240602_075124.jpg"></div>
-                    </div>
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide mobile-slide">
-                    <div class="mobile-stack">
-                        <div class="mobile-image" data-bg="img/IMG_20240602_075433.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20240716_143458.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20240721_143131.jpg"></div>
-                    </div>
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide mobile-slide">
-                    <div class="mobile-stack">
-                        <div class="mobile-image" data-bg="img/IMG_20240721_143246.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20240721_143533.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250125_171341.jpg"></div>
-                    </div>
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide mobile-slide">
-                    <div class="mobile-stack">
-                        <div class="mobile-image" data-bg="img/IMG_20250309_103854.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250315_105540.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250315_105750.jpg"></div>
-                    </div>
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide mobile-slide">
-                    <div class="mobile-stack">
-                        <div class="mobile-image" data-bg="img/IMG_20250502_161632.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250504_142933.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250504_143659.jpg"></div>
-                    </div>
-                    <div class="slide-overlay"></div>
-                </div>
-                <div class="swiper-slide mobile-slide">
-                    <div class="mobile-stack">
-                        <div class="mobile-image" data-bg="img/IMG_20250504_143758.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250615_124243.jpg"></div>
-                        <div class="mobile-image" data-bg="img/IMG_20250629_122042.jpg"></div>
-                    </div>
-                    <div class="slide-overlay"></div>
-                </div>
+                <a href="https://api.whatsapp.com/send?phone=5511933896026" target="_blank" class="menu-item social-item" data-info="Fale conosco pelo WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>WhatsApp</span>
+                </a>
+               
             </div>
-            <div class="swiper-pagination"></div>
+            
+            <div class="menu-info" id="menuInfo"></div>
+        </div>
+
+        <!-- Swiper -->
+        <div class="swiper hero-swiper">
+            <div class="swiper-wrapper" id="swiperWrapper">
+                <!-- Slides will be generated dynamically -->
+            </div>
+            
+            <!-- Navigation -->
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
+            
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
         </div>
+
+
     </section>
-
-
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
     <script>
-        // Lazy Loading System
-        function lazyLoadImages() {
-            const slides = document.querySelectorAll('[data-bg]');
-            const imageObserver = new IntersectionObserver((entries, observer) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const slide = entry.target;
-                        const imageSrc = slide.getAttribute('data-bg');
-                        
-                        // Preload image
-                        const img = new Image();
-                        img.onload = () => {
-                            slide.style.backgroundImage = `url('${imageSrc}')`;
-                            slide.classList.add('loaded');
-                        };
-                        img.src = imageSrc;
-                        
-                        observer.unobserve(slide);
-                    }
-                });
-            }, {
-                rootMargin: '50px'
-            });
-            
-            slides.forEach(slide => {
-                imageObserver.observe(slide);
-            });
-        }
-        
-        // Performance optimization
-         function optimizePerformance() {
-             // Preload first few images immediately for better UX
-             const firstSlides = document.querySelectorAll('.swiper-slide[data-bg]');
-             const mobilesToLoad = document.querySelectorAll('.mobile-image[data-bg]');
-             
-             // Load first 2 desktop slides immediately
-             for (let i = 0; i < Math.min(2, firstSlides.length); i++) {
-                 const slide = firstSlides[i];
-                 const imageSrc = slide.getAttribute('data-bg');
-                 if (imageSrc) {
-                     const img = new Image();
-                     img.onload = () => {
-                         slide.style.backgroundImage = `url('${imageSrc}')`;
-                         slide.classList.add('loaded');
-                     };
-                     img.src = imageSrc;
-                 }
-             }
-             
-             // Load first mobile stack immediately if on mobile
-             if (window.innerWidth <= 480 && mobilesToLoad.length > 0) {
-                 for (let i = 0; i < Math.min(3, mobilesToLoad.length); i++) {
-                     const mobile = mobilesToLoad[i];
-                     const imageSrc = mobile.getAttribute('data-bg');
-                     if (imageSrc) {
-                         const img = new Image();
-                         img.onload = () => {
-                             mobile.style.backgroundImage = `url('${imageSrc}')`;
-                             mobile.classList.add('loaded');
-                         };
-                         img.src = imageSrc;
-                     }
-                 }
-             }
-             
-             // Initialize lazy loading for remaining images
-             setTimeout(() => {
-                 lazyLoadImages();
-             }, 100);
-         }
+        // Image array
+        const images = [
+            'img/IMG_20240316_064801.jpg',
+            'img/IMG_20240329_104654.jpg',
+            'img/IMG_20240602_075124.jpg',
+            'img/IMG_20240602_075433.jpg',
+            'img/IMG_20240716_143458.jpg',
+            'img/IMG_20240721_143131.jpg',
+            'img/IMG_20240721_143246.jpg',
+            'img/IMG_20240721_143533.jpg',
+            'img/IMG_20250125_171341.jpg',
+            'img/IMG_20250309_103854.jpg',
+            'img/IMG_20250315_105540.jpg',
+            'img/IMG_20250315_105750.jpg',
+            'img/IMG_20250502_161632.jpg',
+            'img/IMG_20250504_142933.jpg',
+            'img/IMG_20250504_143659.jpg',
+            'img/IMG_20250504_143758.jpg',
+            'img/IMG_20250615_124243.jpg',
+            'img/IMG_20250629_122042.jpg'
+        ];
 
-        // Logo Animation Sequence
-        function startLogoAnimation() {
-            const logoContainer = document.getElementById('logoContainer');
-            const logoPart1 = document.getElementById('logoPart1');
-            const darkOverlay = document.getElementById('darkOverlay');
-            
-            // Single logo animation
-            setTimeout(() => {
-                logoPart1.classList.add('animate');
-            }, 800);
-            
-            // Move to final position after 5 seconds
-            setTimeout(() => {
-                logoContainer.classList.add('final-position');
-            }, 5000);
-            
-            // Shrink dark overlay after logo animation
-            setTimeout(() => {
-                darkOverlay.classList.add('shrink');
-                // Start UI elements animation sequence
-                startUIAnimation();
-            }, 5500);
-        }
-
-        // UI Elements Animation Sequence
-        function startUIAnimation() {
-            const topControls = document.querySelector('.top-controls');
-            const heroCaption = document.querySelector('.hero-caption');
-            const locationInfo = document.querySelector('.location-info');
-            const swiperPagination = document.querySelector('.swiper-pagination');
-            const swiperButtonNext = document.querySelector('.swiper-button-next');
-            const swiperButtonPrev = document.querySelector('.swiper-button-prev');
-            
-            // 1. Top controls (0.5s after overlay shrinks)
-            setTimeout(() => {
-                topControls.classList.add('show');
-            }, 500);
-            
-            // 2. Hero caption (1s after overlay shrinks)
-            setTimeout(() => {
-                heroCaption.classList.add('show');
-            }, 1000);
-            
-            // 3. Location info (1.5s after overlay shrinks)
-            setTimeout(() => {
-                locationInfo.classList.add('show');
-            }, 1500);
-            
-            // 4. Navigation buttons and pagination (2s after overlay shrinks)
-            setTimeout(() => {
-                if (swiperPagination) {
-                    swiperPagination.classList.add('show');
-                    swiperPagination.style.pointerEvents = 'auto';
-                }
-                if (swiperButtonNext) {
-                    swiperButtonNext.classList.add('show');
-                    swiperButtonNext.style.pointerEvents = 'auto';
-                }
-                if (swiperButtonPrev) {
-                    swiperButtonPrev.classList.add('show');
-                    swiperButtonPrev.style.pointerEvents = 'auto';
-                }
-            }, 2000);
-        }
-
-        // Randomize slides function
-        function randomizeSlides() {
-            const desktopImages = [
-                'img/IMG_20240316_064801.jpg',
-                'img/IMG_20240329_104654.jpg',
-                'img/IMG_20240602_075124.jpg',
-                'img/IMG_20240602_075433.jpg',
-                'img/IMG_20240716_143458.jpg',
-                'img/IMG_20240721_143131.jpg',
-                'img/IMG_20240721_143246.jpg',
-                'img/IMG_20240721_143533.jpg',
-                'img/IMG_20250125_171341.jpg',
-                'img/IMG_20250309_103854.jpg',
-                'img/IMG_20250315_105540.jpg',
-                'img/IMG_20250315_105750.jpg',
-                'img/IMG_20250502_161632.jpg',
-                'img/IMG_20250504_142933.jpg',
-                'img/IMG_20250504_143659.jpg',
-                'img/IMG_20250504_143758.jpg',
-                'img/IMG_20250615_124243.jpg',
-                'img/IMG_20250629_122042.jpg'
-            ];
-            
-            const mobileImages = [
-                'img/IMG_20240316_064801.jpg',
-                'img/IMG_20240329_104654.jpg',
-                'img/IMG_20240602_075124.jpg',
-                'img/IMG_20240602_075433.jpg',
-                'img/IMG_20240716_143458.jpg',
-                'img/IMG_20240721_143131.jpg',
-                'img/IMG_20240721_143246.jpg',
-                'img/IMG_20240721_143533.jpg',
-                'img/IMG_20250125_171341.jpg',
-                'img/IMG_20250309_103854.jpg',
-                'img/IMG_20250315_105540.jpg',
-                'img/IMG_20250315_105750.jpg',
-                'img/IMG_20250502_161632.jpg',
-                'img/IMG_20250504_142933.jpg',
-                'img/IMG_20250504_143659.jpg',
-                'img/IMG_20250504_143758.jpg',
-                'img/IMG_20250615_124243.jpg',
-                'img/IMG_20250629_122042.jpg'
-            ];
-            
-            // Shuffle function
-            function shuffle(array) {
-                const shuffled = [...array];
-                for (let i = shuffled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-                }
-                return shuffled;
+        // Shuffle array function
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
             }
+            return shuffled;
+        }
+
+        // Create slides dynamically
+        function createSlides() {
+            const shuffledImages = shuffleArray(images);
+            const swiperWrapper = document.getElementById('swiperWrapper');
             
-            const shuffledDesktop = shuffle(desktopImages);
-            const shuffledMobile = shuffle(mobileImages);
-            
-            // Update desktop slides
-            const desktopSlides = document.querySelectorAll('.desktop-slide');
-            desktopSlides.forEach((slide, index) => {
-                if (shuffledDesktop[index]) {
-                    slide.setAttribute('data-bg', shuffledDesktop[index]);
-                }
-            });
-            
-            // Update mobile slides (3 images per slide)
-            const mobileSlides = document.querySelectorAll('.mobile-slide');
-            mobileSlides.forEach((slide, slideIndex) => {
-                const mobileImages = slide.querySelectorAll('.mobile-image');
-                mobileImages.forEach((img, imgIndex) => {
-                    const globalIndex = (slideIndex * 3) + imgIndex;
-                    if (shuffledMobile[globalIndex]) {
-                        img.setAttribute('data-bg', shuffledMobile[globalIndex]);
-                    }
-                });
+            shuffledImages.forEach((image, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
+                slide.style.backgroundImage = `url('${image}')`;
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+                slide.style.backgroundRepeat = 'no-repeat';
+                
+                // Add overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'slide-overlay';
+                
+                slide.appendChild(overlay);
+                swiperWrapper.appendChild(slide);
             });
         }
-        
-        // Initialize Swiper with responsive settings
-        let swiper;
-        
+
+        // Initialize Swiper
         function initSwiper() {
-            // Destroy existing swiper if it exists
-            if (swiper) {
-                swiper.destroy(true, true);
-            }
-            
-            const isMobile = window.innerWidth <= 480;
-            
-            swiper = new Swiper(".heroSwiper", {
-                spaceBetween: 0,
-                centeredSlides: true,
+            return new Swiper('.hero-swiper', {
+                // Basic settings
+                loop: true,
+                speed: 1000,
                 autoplay: {
-                    delay: isMobile ? 6000 : 4000,
+                    delay: 4000,
                     disableOnInteraction: false,
                     pauseOnMouseEnter: true,
+                    waitForTransition: true
                 },
-                pagination: {
-                    el: ".swiper-pagination",
-                    clickable: true,
-                    dynamicBullets: true,
-                },
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                },
-                loop: true,
-                effect: "fade",
+                
+                // Effects
+                effect: 'fade',
                 fadeEffect: {
                     crossFade: true
                 },
-                speed: 1000,
-                allowSlideNext: true,
-                allowSlidePrev: true,
+                
+                // Performance
+                preloadImages: true,
+                updateOnWindowResize: true,
+                
+
+                
+                // Navigation
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev'
+                },
+                
+                // Pagination
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                    dynamicBullets: true,
+                    dynamicMainBullets: 5
+                },
+                
+
+                
+                // Events
                 on: {
                     init: function() {
-                        // Ensure buttons are clickable after init
-                        const nextBtn = document.querySelector('.swiper-button-next');
-                        const prevBtn = document.querySelector('.swiper-button-prev');
-                        const pagination = document.querySelector('.swiper-pagination');
-                        
-                        if (nextBtn) {
-                            nextBtn.style.pointerEvents = 'auto';
-                            nextBtn.style.zIndex = '1002';
-                            nextBtn.style.cursor = 'pointer';
-                        }
-                        if (prevBtn) {
-                            prevBtn.style.pointerEvents = 'auto';
-                            prevBtn.style.zIndex = '1002';
-                            prevBtn.style.cursor = 'pointer';
-                        }
-                        if (pagination) {
-                            pagination.style.pointerEvents = 'auto';
-                            pagination.style.zIndex = '1002';
-                        }
+                        console.log('Swiper initialized with', this.slides.length, 'slides');
+                    },
+                    resize: function() {
+                        this.update();
                     }
                 }
             });
         }
-        
-        // Reinitialize on window resize
+
+        // Preload images
+        function preloadImages(images) {
+            return Promise.all(
+                images.map(src => {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = src;
+                    });
+                })
+            );
+        }
+
+        // Initialize everything
+        async function init() {
+            try {
+                // Show loading for minimum 1 second
+                const minLoadTime = new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Wait for minimum time
+                await minLoadTime;
+                
+                // Create slides
+                createSlides();
+                
+                // Initialize Swiper
+                const swiper = initSwiper();
+                window.swiper = swiper;
+                
+                // Hide loading overlay
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.classList.add('hidden');
+                
+                // Preload remaining images in background
+                const remainingImages = images.slice(5);
+                preloadImages(remainingImages).catch(console.warn);
+                
+                console.log('Slideshow initialized successfully!');
+                
+            } catch (error) {
+                console.error('Error initializing slideshow:', error);
+                // Hide loading even if there's an error
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        }
+
+        // Handle window resize
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
-                initSwiper();
+                // Reinitialize if needed
+                if (window.swiper) {
+                    window.swiper.update();
+                }
             }, 250);
         });
 
-        // Initialize animations and swiper
-        window.addEventListener('load', () => {
-            randomizeSlides(); // Randomize slides before everything else
-            optimizePerformance();
-            initSwiper();
-            startLogoAnimation();
-        });
-        
-        // Initialize critical optimizations as soon as DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add loading class for smooth transitions
-            document.body.classList.add('loading');
+        // Start initialization when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Hamburger Menu Functionality
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const menuDropdown = document.getElementById('menuDropdown');
+        const menuInfo = document.getElementById('menuInfo');
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        // Toggle menu dropdown
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            menuDropdown.classList.toggle('active');
             
-            // Remove loading class after everything is ready
-            window.addEventListener('load', function() {
-                setTimeout(() => {
-                    document.body.classList.remove('loading');
-                }, 100);
+            // Hide info when closing menu
+            if (!menuDropdown.classList.contains('active')) {
+                menuInfo.classList.remove('show');
+            }
+        });
+
+        // Show/hide info on hover
+        menuItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                const info = item.getAttribute('data-info');
+                if (info) {
+                    menuInfo.textContent = info;
+                    menuInfo.classList.add('show');
+                }
             });
+
+            item.addEventListener('mouseleave', () => {
+                menuInfo.classList.remove('show');
+            });
+
+            // Also show info on click for mobile
+            item.addEventListener('click', (e) => {
+                // Only prevent default for non-link items
+                if (!item.href || item.href === '#') {
+                    e.preventDefault();
+                }
+                const info = item.getAttribute('data-info');
+                if (info) {
+                    menuInfo.textContent = info;
+                    menuInfo.classList.add('show');
+                }
+            });
+        });
+
+        // Close menu when clicking outside
+        let clickTimeout;
+        document.addEventListener('click', (e) => {
+            clearTimeout(clickTimeout);
+            clickTimeout = setTimeout(() => {
+                if (!hamburgerBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+                    hamburgerBtn.classList.remove('active');
+                    menuDropdown.classList.remove('active');
+                    menuInfo.classList.remove('show');
+                }
+            }, 10);
         });
     </script>
 </body>
