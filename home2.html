@@ -572,6 +572,44 @@
             background: rgba(0,0,0,0.3);
             opacity: 0.9;
         }
+
+        /* Mobile stacked images layout */
+        .mobile-slide {
+            display: none;
+        }
+
+        .desktop-slide {
+            display: block;
+        }
+
+        .mobile-stack {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .mobile-image {
+            flex: 1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .mobile-image:not(:last-child) {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .mobile-slide {
+                display: block;
+            }
+
+            .desktop-slide {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -610,22 +648,41 @@
         
         <div class="swiper heroSwiper">
             <div class="swiper-wrapper">                
-                <div class="swiper-slide" style="background-image: url('img/IMG_20250502_161632.jpg')">
+                <!-- Desktop slides - single images -->
+                <div class="swiper-slide desktop-slide" style="background-image: url('img/IMG_20250502_161632.jpg')">
                     <div class="slide-overlay"></div>
                 </div>                
-                <div class="swiper-slide" style="background-image: url('img/IMG_20250504_142933.jpg')">
+                <div class="swiper-slide desktop-slide" style="background-image: url('img/IMG_20250504_142933.jpg')">
                     <div class="slide-overlay"></div>
                 </div>
-                <div class="swiper-slide" style="background-image: url('img/IMG_20250504_143659.jpg')">
+                <div class="swiper-slide desktop-slide" style="background-image: url('img/IMG_20250504_143659.jpg')">
                     <div class="slide-overlay"></div>
                 </div>
-                <div class="swiper-slide" style="background-image: url('img/IMG_20250504_143758.jpg')">
+                <div class="swiper-slide desktop-slide" style="background-image: url('img/IMG_20250504_143758.jpg')">
                     <div class="slide-overlay"></div>
                 </div>
-                <div class="swiper-slide" style="background-image: url('img/IMG_20250615_124243.jpg')">
+                <div class="swiper-slide desktop-slide" style="background-image: url('img/IMG_20250615_124243.jpg')">
                     <div class="slide-overlay"></div>
                 </div>
-                <div class="swiper-slide" style="background-image: url('img/IMG_20250629_122042.jpg')">
+                <div class="swiper-slide desktop-slide" style="background-image: url('img/IMG_20250629_122042.jpg')">
+                    <div class="slide-overlay"></div>
+                </div>
+                
+                <!-- Mobile slides - 3 stacked images -->
+                <div class="swiper-slide mobile-slide">
+                    <div class="mobile-stack">
+                        <div class="mobile-image" style="background-image: url('img/IMG_20250502_161632.jpg')"></div>
+                        <div class="mobile-image" style="background-image: url('img/IMG_20250504_142933.jpg')"></div>
+                        <div class="mobile-image" style="background-image: url('img/IMG_20250504_143659.jpg')"></div>
+                    </div>
+                    <div class="slide-overlay"></div>
+                </div>
+                <div class="swiper-slide mobile-slide">
+                    <div class="mobile-stack">
+                        <div class="mobile-image" style="background-image: url('img/IMG_20250504_143758.jpg')"></div>
+                        <div class="mobile-image" style="background-image: url('img/IMG_20250615_124243.jpg')"></div>
+                        <div class="mobile-image" style="background-image: url('img/IMG_20250629_122042.jpg')"></div>
+                    </div>
                     <div class="slide-overlay"></div>
                 </div>
             </div>
@@ -697,33 +754,57 @@
             }, 2000);
         }
 
-        // Initialize Swiper with enhanced settings
-        var swiper = new Swiper(".heroSwiper", {
-            spaceBetween: 0,
-            centeredSlides: true,
-            autoplay: {
-                delay: 4000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-                dynamicBullets: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            loop: true,
-            effect: "fade",
-            fadeEffect: {
-                crossFade: true
-            },
-            speed: 1000,
+        // Initialize Swiper with responsive settings
+        let swiper;
+        
+        function initSwiper() {
+            // Destroy existing swiper if it exists
+            if (swiper) {
+                swiper.destroy(true, true);
+            }
+            
+            const isMobile = window.innerWidth <= 480;
+            
+            swiper = new Swiper(".heroSwiper", {
+                spaceBetween: 0,
+                centeredSlides: true,
+                autoplay: {
+                    delay: isMobile ? 6000 : 4000,
+                    disableOnInteraction: false,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                    dynamicBullets: true,
+                },
+                navigation: {
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                },
+                loop: true,
+                effect: "fade",
+                fadeEffect: {
+                    crossFade: true
+                },
+                speed: 1000,
+                // Show only relevant slides based on screen size
+                allowSlideNext: true,
+                allowSlidePrev: true,
+            });
+        }
+        
+        // Reinitialize on window resize
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                initSwiper();
+            }, 250);
         });
 
-        // Initialize animations
+        // Initialize animations and swiper
         window.addEventListener('load', () => {
+            initSwiper();
             startLogoAnimation();
         });
     </script>
