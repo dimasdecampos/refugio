@@ -321,6 +321,24 @@
                  top: -20px;
              }
 
+            .hero-swiper {
+                display: grid;
+                grid-template-rows: 1fr 1fr 1fr;
+                gap: 2px;
+            }
+
+            .swiper-wrapper {
+                display: grid;
+                grid-template-rows: 1fr 1fr 1fr;
+                gap: 2px;
+                height: 100%;
+            }
+
+            .swiper-slide {
+                height: calc(33.33vh - 1.33px);
+                position: relative;
+            }
+
             .swiper-button-next,
             .swiper-button-prev {
                 width: 35px;
@@ -602,26 +620,62 @@
         function createSlides() {
             const shuffledImages = shuffleArray(images);
             const swiperWrapper = document.getElementById('swiperWrapper');
+            const isMobile = window.innerWidth <= 480;
             
-            shuffledImages.forEach((image, index) => {
-                const slide = document.createElement('div');
-                slide.className = 'swiper-slide';
-                slide.style.backgroundImage = `url('${image}')`;
-                slide.style.backgroundSize = 'cover';
-                slide.style.backgroundPosition = 'center';
-                slide.style.backgroundRepeat = 'no-repeat';
-                
-                // Add overlay
-                const overlay = document.createElement('div');
-                overlay.className = 'slide-overlay';
-                
-                slide.appendChild(overlay);
-                swiperWrapper.appendChild(slide);
-            });
+            if (isMobile) {
+                // For mobile, show first group of 3 images
+                const firstGroup = mobileGroups[0] || shuffledImages.slice(0, 3);
+                firstGroup.forEach((image, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'swiper-slide';
+                    slide.style.backgroundImage = `url('${image}')`;
+                    slide.style.backgroundSize = 'cover';
+                    slide.style.backgroundPosition = 'center';
+                    slide.style.backgroundRepeat = 'no-repeat';
+                    
+                    // Add overlay
+                    const overlay = document.createElement('div');
+                    overlay.className = 'slide-overlay';
+                    
+                    slide.appendChild(overlay);
+                    swiperWrapper.appendChild(slide);
+                });
+            } else {
+                // For desktop, show all images
+                shuffledImages.forEach((image, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'swiper-slide';
+                    slide.style.backgroundImage = `url('${image}')`;
+                    slide.style.backgroundSize = 'cover';
+                    slide.style.backgroundPosition = 'center';
+                    slide.style.backgroundRepeat = 'no-repeat';
+                    
+                    // Add overlay
+                    const overlay = document.createElement('div');
+                    overlay.className = 'slide-overlay';
+                    
+                    slide.appendChild(overlay);
+                    swiperWrapper.appendChild(slide);
+                });
+            }
         }
+
+        // Mobile navigation variables
+        let currentMobileGroup = 0;
+        let mobileGroups = [];
+        let isMobileLayout = false;
 
         // Initialize Swiper
         function initSwiper() {
+            // Check if mobile
+            isMobileLayout = window.innerWidth <= 480;
+            
+            if (isMobileLayout) {
+                // Setup mobile navigation
+                setupMobileNavigation();
+                return null;
+            }
+            
             return new Swiper('.hero-swiper', {
                 // Basic settings
                 loop: true,
@@ -670,6 +724,53 @@
                         this.update();
                     }
                 }
+            });
+        }
+
+        // Setup mobile navigation
+        function setupMobileNavigation() {
+            // Create groups of 3 images
+            const shuffledImages = shuffleArray(images);
+            mobileGroups = [];
+            for (let i = 0; i < shuffledImages.length; i += 3) {
+                mobileGroups.push(shuffledImages.slice(i, i + 3));
+            }
+            
+            // Setup navigation buttons
+            const nextBtn = document.querySelector('.swiper-button-next');
+            const prevBtn = document.querySelector('.swiper-button-prev');
+            
+            nextBtn.onclick = () => {
+                currentMobileGroup = (currentMobileGroup + 1) % mobileGroups.length;
+                updateMobileSlides();
+            };
+            
+            prevBtn.onclick = () => {
+                currentMobileGroup = currentMobileGroup === 0 ? mobileGroups.length - 1 : currentMobileGroup - 1;
+                updateMobileSlides();
+            };
+        }
+
+        // Update mobile slides
+        function updateMobileSlides() {
+            const swiperWrapper = document.getElementById('swiperWrapper');
+            swiperWrapper.innerHTML = '';
+            
+            const currentGroup = mobileGroups[currentMobileGroup];
+            currentGroup.forEach((image, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
+                slide.style.backgroundImage = `url('${image}')`;
+                slide.style.backgroundSize = 'cover';
+                slide.style.backgroundPosition = 'center';
+                slide.style.backgroundRepeat = 'no-repeat';
+                
+                // Add overlay
+                const overlay = document.createElement('div');
+                overlay.className = 'slide-overlay';
+                
+                slide.appendChild(overlay);
+                swiperWrapper.appendChild(slide);
             });
         }
 
